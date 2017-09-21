@@ -89,16 +89,111 @@ Some systems allow for multiple (vertical) levels of target hypotheses. In the C
 first level normalises grammatical forms without context information. All other deviations (e.g. word order) are in a second level and takes the whole sentence into consideration.
 In MERLIN (MERLIN project 2014) two levels are used: a) minimal corrections pertaining only to orthographic and grammatical errors and b) corrections to handle sociolinguistic, lexical and pragmatic deviations to arrive at what is referred to as an acceptable text. This could be handled in our approach by maintaining several levels of aligned normalisations. The first level (with basic corrections) would then be aligned to the source text, and the second level (with additional corrections) would be aligned to the first level. Adding several levels is something that we have not undertaken yet, however. We also do not handle multiple {\em competing} target hypotheses for the same source material in the manner of L{\"u}deling et al. (2005).\footnote{An example of this from L{\"u}deling et al. (ibid.) is "diese Ph{\"a}nomen" which could be interpreted either as a gender error (with the target hypothesis "dieses Ph{\"a}nomen") or as a number error (with the target hypothesis "diese Ph{\"a}nomene").} In principle, this could be handled in our approach by maintaining different normalisations on the same level for a given part of the source text.
 
-Something about the implementation of normalisation (browser-based, single-page, interface components, \ldots )? Representation of texts and alignments \ldots ?
+\subsection{Design of our normalisation tool}
+
+We set off to build a normalisation tool to be both simple and expressive.
+We wanted it to have the feel of a conventional text editor and yet retain
+information about how a word was normalised or where it was moved to.
+To be able to answer questions about movement we make the assumption that
+the text can be tokenized. For now we assume that a sequence of characters
+separates two tokens iff it is whitespace only.
+
+% the content of this section should go somewhere
+During normalisation we assume that we can require of the user to pay attention
+to the links edits their text edits give rise to. We facilitate this by
+providing two views of the difference between the source and the target text.
+
+For expressing overcompounding and oversplitting we need links between tokens
+that are many-to-one and one-to-many. We express insertion or deletion with
+zero-to-one and one-to-zero links. We initially experimented with not allowing
+many-to-many links but this asymmetry yielded no substantial benefits
+and we now allow many-to-many links.
+% of which we outline some benefits of below
+For simplicity we require each component
+of links must be complete: missing edges are automatically added by
+transitivity.
+
+We now outline how to instrument a traditional text editor to support links.
+When starting the editing session the source and target are identical so the
+links are initialised with the identity mapping. The user starts editing
+by inserting and deleting characters. We abstract over this with the observation
+that each edit replaces the current selection with a string. There are
+some different cases: usually the selection is just the cursor and then the
+modification is an insertion. If the selection is wider than that the user
+did a replacement. Usually the inserted string is a sole character corresponding
+from a keypress, but in the case of deletion the ``inserted'' string is the
+empty string. The inserted string can also have length greater than one
+if the user pastes text into the editor. (We will have more to say about
+cut and paste later.)
+
+When the editor is linked to a source text we also need to update the links.
+This is how to resolve the possible editing situations:
+% Could make images for each and every one of these (but what example texts to use?)
+
+\begin{itemize}
+
+\item {\it Edit within an existing token:}
+Update the target word, links stay intact.
+
+\item {\it Edit ranging over several tokens:}
+Merge the links from the involved tokens and update the text.
+
+\item {\it Edit removing a token completly:}
+Removes any links from the source to this target token.
+If this removes the last link of a source token it means that
+it is deleted in the hypothesis (presumably a redundant word.)
+
+\item {\it Edit introducing new whitespace:}
+The user wants to split a word, perhaps an overcompound.
+Pass over all links form the token before being split to each newly created token.
+% Can introduce unlinked tokens (insertions) as a special case, could come back to this
+
+\end{itemize}
+
+% TODO: Write about rearranging words by cut&paste / drag&drop
+
+\paragraph{Implementation}
+We have implemented a working version as a single-page web application.
+It does not rely on any server backend: all processing is done in the
+client's browser. We use an off-the-shelf editor
+CodeMirror\footnote{\url{https://codemirror.net}} which
+runs in the browser, but we instrument it as outlined above in this section.
+Internally we keep an array of the tokens in the target text together with
+which indexes of the source tokens it links to.  We only use immutable
+data structures for ease of implementation, but this makes array operations
+linear in the length of the text. Should this prove too slow for long texts
+it can be improved by restricting move operations to only be within, say,
+paragraphs. Another alternative is to switch to a more sophisticated data
+structure such as sequences built on top of finger trees, which admit updates
+in logarithmic time.
+
+We show differences inside tokens by calculating a diff automatically
+using standard techniques for finding edit scripts.
+Deletions are shown in red with overstrike and insertions in green.
+This is simply and aid to the user by highlighting more clearly where the
+differences are.  Internally we only store replacements on the token level
+and the this intra-token diff is recalculated after every edit.
+
+\subparagraph{Undo} We support unlimited chronological undo and redo.
+For convenience we also support undo at a specific position in the hypothesis.
+To simplify things we revert the entire component of links that position
+is tied to. Tokens are rearranged into their original positions, which
+can be recovered by using unmoved words as reference points.
+Undoing is very useful to get links exactly right, which can sometimes take a
+few tries.
+% Auto-revert: we automatically auto-revert tokens if the user writes them
+% back into the same form as they were in to start with (like a manual undo)
 
 \section{Annotation of Norm Deviations}
-
 
 %
 We put labels on the edges (or a component of edges). Inserted and deleted words need a handle/half-edge to get
 a label (such as missing word or redundant word)
 This can be done after normalising the text, but we can go back and forth between the modes if the
 annotator is not pleased with their normalisation.
+
+Note to reviewers: this is the upcoming work the coming weeks for us and
+will be done by the camera-ready version.
 %
 
 Elena: Also something about about our intended error categories?
@@ -110,6 +205,11 @@ Summarise overall workflow\ldots ?
 We believe that the following properties of our approach will contribute to more reliable normalisation, less time-consuming annotation and production of more valuable corpus resources compared to traditional methods (can we substantiate any of this?):
 
 First, the conceptually different tasks of deciding on a target hypotheses (with resulting normalisations) and annotating norm deviations are separated. Also, since the source text and normalised text are displayed in separate panes, with the normalised text being incrementally updated, the annotator is provided with excellent facilities for getting to know the specific inter-language of the learner, and to make consistent decisions on target hypotheses. In addition, the editing operations could be used for inferring a preliminary error annotation, though this is a path that we have not yet explored. Furthermore, a parallel text is automatically constructed based on the editing operations, which provides a resource valuable for independent purposes, such as training of a system for automated normalisation.
+
+The user experience will be improved by allowing the annotator to connect
+and disconnect links directly in the ladder diagram. This should also be
+possible by using keyboard shortcuts in the editor.  Frequent operations
+such as transposing words can also get dedicated keyboard bindings.
 
 \section{Conclusion}
 
