@@ -122,9 +122,8 @@ some different cases: usually the selection is just the cursor and then the
 modification is an insertion. If the selection is wider than that the user
 did a replacement. Usually the inserted string is a sole character corresponding
 from a keypress, but in the case of deletion the ``inserted'' string is the
-empty string. The inserted string can also have length greater than one
-if the user pastes text into the editor. (We will have more to say about
-cut and paste later.)
+empty string.
+%The inserted string can also have length greater than one if the user pastes text into the editor.
 
 When the editor is linked to a source text we also need to update the links.
 This is how to resolve the possible editing situations:
@@ -150,7 +149,18 @@ Pass over all links form the token before being split to each newly created toke
 
 \end{itemize}
 
-% TODO: Write about rearranging words by cut&paste / drag&drop
+The above outline handles most common edit operations, and includes derived
+operations such as search and replace which can be seen as a sequence of edits.
+
+We support rearranging the words by making cut and paste aware of the link
+structure. To move a sequence of words the user selects a range
+which includes these words and presses the shortcut for cutting: {\it Ctrl+X}.
+This does not yet cut the words but instead highlights them. We expand partially
+selected tokens to whole tokens to simplify this operation. The user then
+navigates to the position they want the words to go and presses the paste
+shortcut: {\it Ctrl+V}. This moves the tokens together with their links to the
+new position. This operation can also be executed by drag and drop with the mouse.
+% Image with example showing this step by step?
 
 \paragraph{Implementation}
 We have implemented a working version as a single-page web application.
@@ -187,13 +197,13 @@ few tries.
 \section{Annotation of Norm Deviations}
 
 %
-We put labels on the edges (or a component of edges). Inserted and deleted words need a handle/half-edge to get
-a label (such as missing word or redundant word)
-This can be done after normalising the text, but we can go back and forth between the modes if the
-annotator is not pleased with their normalisation.
+We want to support annotating the edits from the normalisation with a taxonomy
+of norm deviations.  The intent is to put labels on components of links.
+This can be done after normalising the text, but we can go back and forth
+between the modes if the annotator want to improve the normalisation.
 
-Note to reviewers: this is the upcoming work the coming weeks for us and
-will be done by the camera-ready version.
+Note to reviewers: this is the scheduled to be completed in a few weeks
+will be completed well before the camera-ready version.
 %
 
 Elena: Also something about about our intended error categories?
