@@ -8,6 +8,8 @@
 \usepackage{color}
 % for eps graphics
 
+\usepackage[normalem]{ulem}
+
 \usepackage{epstopdf}
 \usepackage[utf8]{inputenc}
 
@@ -43,10 +45,10 @@ SweLL project focuses on setting up an electronic research infrastructure for Sw
 \end{enumerate}
 
 
-The need for data is omnipresent within Language Technology projects, and not the least when it comes to data produced by second language (L2) learners. Not only the L2 data is sensitive in nature and requires (agreements for use of) associated socio-demographic information, but it also demonstrates a good deal of deviations from the language norms to be analyzed with existing NLP tools. Preparation of L2 data for NLP experiments is therefore very demanding, where annotation of norm deviations (error annontation) is probably the most time-consuming step. 
+The need for data is omnipresent within Language Technology projects, and not the least when it comes to data produced by second language (L2) learners. Not only the L2 data is sensitive in nature and requires (agreements for use of) associated socio-demographic information, but it also demonstrates a good deal of deviations from the language norms to be analyzed with existing NLP tools. Preparation of L2 data for NLP experiments is therefore very demanding, where annotation of norm deviations (error annontation) is probably the most time-consuming step.
 
  \ldots
- 
+
 One focus of the current work is annotation of norm deviations in L2 texts. \ldots
 
 \section{Transformation-based Annotation}
@@ -57,7 +59,7 @@ The basic problem with this kind of approach is that it conflates the conceptual
 
 In Falko (L{\"u}deling et al.\ 2005) and MERLIN (MERLIN project 2014), target hypothesis corrections have a more independent status in the sense that they are entered in a separate step prior to error annotation, but the normalised text still does not seem to be available in its entirety. To circumvent these problems, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some guideline, and annotating the norm deviations corresponding to the changes.
 
-\section{Target Hypotheses and Normalisation}
+\subsection{Target Hypotheses and Normalisation}
 
 Normalisation involves, for each deviation from the norm, to decide on a target hypothesis and to edit the text to mirror this hypothesis. We take an editing operation to be insertion, deletion, replacement \textcolor{red}{EV:("substitution" instead of "replacement"?; merge? split? - separate actions or as variants of replacement, insertion and deletion?)} and move \textcolor{red}{EV:(Is it a term?)}
 of one or several tokens \textcolor{red}{(EV: what about characters?)}. By keeping track of the sequence of such editing operations, an additional advantage could be gained, namely, that a basic, preliminary error annotation could be automatically inferred. We plan to explore this possibility later in the project.
@@ -76,12 +78,14 @@ is more difficult to calculate, which is why we log the editing operations.
 \emph{\small I live in an apartment. I have lived there for one year. I would like to have a big house.}
 \caption{Screenshot of an editing session in progress. The three panes in the upper row are from left to right:
 1) the source text which cannot be edited,
-2) the target hypothesis which is where the annotator does all their edits,
-3) a calculated view of their differences based on the edit history.
-Below the panes is the \emph{ladder diagram} which shows the differences
-pictorially: the source text on top and below the target hypothesis.
-(If the text is too long the ladder shows only the current sentence.)
-% say something about the edges
+2) the target hypothesis which is where the annotator do all their edits,
+3) a calculated view of the differences between the two texts obtained from the history of edits.
+Below the panes we display the the differences pictorially:
+the source text on top and the target hypothesis below, with edges
+showing how words have been moved.
+% Deletions are shown in \textcolor{red}{red} with \sout{overstrike},
+% insertions in \textcolor{green}{green} with \underline{underline}.
+% (If the text is too long only the current sentence is shown.)
 \label{fig:screenshot}
 }
 \end{figure*}
@@ -91,19 +95,22 @@ Some systems allow for multiple (vertical) levels of target hypotheses. In the C
 first level normalises grammatical forms without context information. All other deviations (e.g. word order) belong to a second level and take the whole sentence into consideration.
 In MERLIN (MERLIN project 2014) two levels are used: a) minimal corrections pertaining only to orthographic and grammatical errors and b) corrections to handle sociolinguistic, lexical and pragmatic deviations to arrive at what is referred to as an acceptable text. This could be handled in our approach by maintaining several levels of aligned normalisations. The first level (with basic corrections) would then be aligned to the source text, and the second level (with additional corrections) would be aligned to the first level. Adding several levels is something that we have not undertaken yet, however. We also do not handle multiple {\em competing} target hypotheses for the same source material in the manner of L{\"u}deling et al. (2005) \textcolor{red}{(EV: should also provide page)}.\footnote{An example of this from L{\"u}deling et al. (ibid.) is "diese Ph{\"a}nomen" which could be interpreted either as a gender error (with the target hypothesis "dieses Ph{\"a}nomen") or as a number error (with the target hypothesis "diese Ph{\"a}nomene").} In principle, this could be handled in our approach by maintaining different normalisations on the same level for a given part of the source text.
 
-\subsection{Design of our normalisation tool}
+\section{Design of our normalisation tool}
 
 We set off to build a normalisation tool to be both simple and expressive.
 We wanted it to have the feel of a conventional text editor and yet retain
-information about how a word was normalised or where it was moved to.
-To be able to answer questions about movement we make the assumption that
-the text can be tokenized. For now we assume that a sequence of characters
-separates two tokens iff it is whitespace only.
+information about how a word was normalised or where it was moved to. To be
+able to answer questions about movement we make the assumption that the text
+can be tokenized. For now we assume that tokens are separated by whitespace
+and cannot contain whitespace themselves. Thus inserting whitespace between
+characters makes a new token and deleting the last whitespace between two
+tokens merges them into one.
 
-% the content of this section should go somewhere
-During normalisation we assume that we can require of the user to pay attention
-to the links edits their text edits give rise to. We facilitate this by
-providing two views of the difference between the source and the target text.
+% Where should this paragraph be?
+We assume that the user can during normalisation be required to pay attention
+to how their edits affect the links between the source text and the target
+hypothesis. We facilitate this by providing views of their difference and
+the links between them.
 
 For expressing overcompounding and oversplitting we need links between tokens
 that are many-to-one and one-to-many. We express insertion or deletion with
@@ -118,13 +125,12 @@ transitivity.
 We now outline how to instrument a traditional text editor to support links.
 When starting the editing session the source and target are identical so the
 links are initialised with the identity mapping. The user starts editing
-by inserting and deleting characters. We abstract over this with the observation
-that each edit replaces the current selection with a string. There are
-some different cases: usually the selection is just the cursor and then the
-modification is an insertion. If the selection is wider than that the user
-did a replacement. Usually the inserted string is a sole character corresponding
-from a keypress, but in the case of deletion the ``inserted'' string is the
-empty string.
+by inserting and deleting characters.
+We generalizing this to each edit which replaces the current selection with a
+string. Usually the selection is just the cursor and the ``replacement'' string
+is one character: then the modification is an insertion.
+If the selection has non-zero width the user did an actual replacement.
+Deletions are modelled by replacing with the empty string.
 %The inserted string can also have length greater than one if the user pastes text into the editor.
 
 When the editor is linked to a source text we also need to update the links.
@@ -134,19 +140,19 @@ This is how to resolve the possible editing situations:
 \begin{itemize}
 
 \item {\it Edit within an existing token:}
-Update the target word, links stay intact.
+Update the target word, links stay the same.
 
 \item {\it Edit ranging over several tokens:}
 Merge the links from the involved tokens and update the text.
 
-\item {\it Edit removing a token completly:}
+\item {\it Edit removing a token completely:}
 Removes any links from the source to this target token.
 If this removes the last link of a source token it means that
 it is deleted in the hypothesis (presumably a redundant word.)
 
 \item {\it Edit introducing new whitespace:}
 The user wants to split a word, perhaps an overcompound.
-Pass over all links form the token before being split to each newly created token.
+Pass over all links form the token to each new token.
 % Can introduce unlinked tokens (insertions) as a special case, could come back to this
 
 \end{itemize}
@@ -159,42 +165,43 @@ structure. To move a sequence of words the user selects a range
 which includes these words and presses the shortcut for cutting: {\it Ctrl+X}.
 This does not yet cut the words but instead highlights them. We expand partially
 selected tokens to whole tokens to simplify this operation. The user then
-navigates to the position they want the words to go and presses the paste
-shortcut: {\it Ctrl+V}. This moves the tokens together with their links to the
-new position. This operation can also be executed by drag and drop with the mouse.
+navigates to the position they want the words to go and press the paste
+shortcut: {\it Ctrl+V}.
+This moves the tokens together with their links to the new position.
+This rearranging operation can also be executed with the mouse using drag and drop.
 % Image with example showing this step by step?
 
-\paragraph{Implementation}
-We have implemented a working version as a single-page web application.
-It does not rely on any server backend: all processing is done in the
-client's browser. We use an off-the-shelf editor
-CodeMirror\footnote{\url{https://codemirror.net}} which
-runs in the browser, but we instrument it as outlined above in this section.
-Internally we keep an array of the tokens in the target text together with
-which indexes of the source tokens it links to.  We only use immutable
-data structures for ease of implementation, but this makes array operations
-linear in the length of the text. Should this prove too slow for long texts
-it can be improved by restricting move operations to only be within, say,
-paragraphs. Another alternative is to switch to a more sophisticated data
-structure such as sequences built on top of finger trees, which admit updates
-in logarithmic time.
-
-We show differences inside tokens by calculating a diff automatically
-using standard techniques for finding edit scripts.
-Deletions are shown in red with overstrike and insertions in green.
-This is simply and aid to the user by highlighting more clearly where the
-differences are.  Internally we only store replacements on the token level
-and the this intra-token diff is recalculated after every edit.
-
 \subparagraph{Undo} We support unlimited chronological undo and redo.
-For convenience we also support undo at a specific position in the hypothesis.
-To simplify things we revert the entire component of links that position
-is tied to. Tokens are rearranged into their original positions, which
-can be recovered by using unmoved words as reference points.
-Undoing is very useful to get links exactly right, which can sometimes take a
+For convenience we also support undo at a specific position. % in the hypothesis.
+If this position is part of a compound of the entire compound is reverted.
+Tokens are rearranged into their original positions, which
+can be recovered using unmoved words as reference points.
+Undoing is very useful to get links exactly right, which occasionally takes a
 few tries.
-% Auto-revert: we automatically auto-revert tokens if the user writes them
-% back into the same form as they were in to start with (like a manual undo)
+% Auto-revert: we automatically auto-revert compounds if the user writes them
+% back to the original
+
+\subparagraph{Intra-token diffs} We show differences inside tokens by
+calculating a diff automatically using standard techniques for finding
+edit scripts.  Deletions are shown in red with overstrike and insertions
+in green.  Note that this intra-token diff is recalculated after every edit
+as interntally only replacements on the token level are stored.  However,
+this clear highlighting of differences works as an aid for the user.
+
+\paragraph{Implementation}
+We have implemented a working prototype as a single-page web application.
+It does not rely on any server backend: all processing is done in the
+client's browser. We use an off-the-shelf editor for web applications,
+CodeMirror\footnote{\url{https://codemirror.net}},
+instrumented as described in this section.
+Internally we keep an array of the tokens in the target text together with
+which indexes of the source tokens it links to.  We only use immutable data
+structures for ease of implementation,  which could be an efficiency problem:
+it makes makes array operations linear in the length of the text. Should
+this prove too slow for long texts it can be improved by restricting move
+operations to only be within, say, paragraphs. Another alternative is to
+switch to a more sophisticated data structure such as sequences built on
+top of finger trees, which admit updates in logarithmic time.
 
 \section{Annotation of Norm Deviations}
 
@@ -253,7 +260,7 @@ of the article, in the \textbf{Language Resource References} section, placed aft
 the \textbf{Bibliographical References} section. The title of the ``Language Resource
 References'' section, should be a level 1 heading. The first line of each
 language resource reference should be justified to the left of the column, and
-the rest of the entry should be indented by 0.35 cm. The example in Section 
+the rest of the entry should be indented by 0.35 cm. The example in Section
 \secref{lr:ref} illustrates the basic format required for language resources.
 
 In order to be able to cite a language resource, it must be added to
@@ -271,7 +278,7 @@ contains the following fields:
     \item{\texttt{edition}: version of the resource}
     \item{\texttt{islrn}: the International Standard Language Resource Number
           (ISLRN) of the resource\footnote{The ISLRN number is available from
-          \texttt{http://islrn.org}}} 
+          \texttt{http://islrn.org}}}
 \end{itemize}
 
 If you want the full resource author name to appear in the citation, the
