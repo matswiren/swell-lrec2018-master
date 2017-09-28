@@ -28,7 +28,7 @@
          \{author1, author5, author9\}@abc.org\\}
 
 \abstract{
-This paper describes ongoing work on the development of an infrastructure for research on Swedish as a second language, with particular focus on our system for annotation of deviations (errors) relative to the norm of the language being learned. Unlike traditional approaches which treat this as a single task applied to a static learner text, our approach is divided into two successive steps to reflect the conceptual structure of the problem: a) normalisation  of the learner text by transforming (editing) it to reflect the target hypotheses, and b) the actual norm-deviation annotation, supported by visualisation of the differences between source and normalisation. An additional advantage of our approach is that a parallel text is generated in the transformation step, with word alignments inferred from the editing operations. This is a useful resource in its own right, by allowing for search of both the source and normalised texts, and for training of systems for automated annotation of norm deviations. We describe the overall design of the transformation-based annotation system, as well as the workflow and initial user experiences [179 words out of 200 allowed].}
+This paper describes ongoing work on a system for annotation of deviations (errors) relative to the norm in second-language learner texts, which is a key component of an intended infrastructure for research on Swedish as a second language. Unlike traditional approaches which treat this as a single task applied to a static learner text, our approach is divided into two successive steps to reflect the conceptual structure of the problem: a) normalisation  of the learner text by transforming (editing) it to reflect the target hypotheses, and b) the actual norm-deviation annotation, supported by visualisation of the differences between source and normalisation. Another distinct feature of our approach is that a parallel text is generated in the transformation step, with word alignments inferred from the editing operations. This parallel text is a useful resource in its own right, by allowing for search in either or both of the source and normalised texts, and for training of systems for automated annotation of norm deviations. We describe the existing system for normalisation and outline the associated system for norm-deviation annotation currently being implemented, as well as the overall intended workflow [190 words out of 200 allowed].}
 
 \begin{document}
 
@@ -36,42 +36,31 @@ This paper describes ongoing work on the development of an infrastructure for re
 
 \section{Background and Introduction}
 
-SweLL project focuses on setting up an electronic research infrastructure for Swedish as a Second Language. In general terms, an electronic research infrastructure ideally consists of:
+This work is carried out within the SweLL project, whose goal is to construct an electronic research infrastructure for Swedish as a second language. We take an electronic research infrastructure to consist of the following components:
 \begin{enumerate}
-\item  (free accessible) data in electronic format
-\item  technical platform for exploring the data, including tools and algorithms for data analysis,  and visualization
-\item a set of tools and technical solutions for new data collection and preparation, including data processing and annotation
-\item  relevant expertise within the area
+\item freely accessible data in electronic format;
+\item a set of tools for data collection and preparation, including
+% ??? data processing
+analysis of proficiency levels, norm-deviation (error) annotation, and linguistic annotation;
+\item a technical platform for exploring the data with tools for data analysis and visualization;
+\item expertise within the relevant areas.
 \end{enumerate}
 
+The need for data is omnipresent within language technology projects, not the least when it comes to data produced by second language (L2) learners. Not only is the L2 data sensitive in nature and requires (agreements for use of) associated socio-demographic information, but it also demonstrates significant deviations from the norms that can standard tools for natural-language processing (NLP) are tailored for. Preparation of L2 data for NLP experiments is therefore very demanding, and annotation of norm deviations (errors) is arguably the most time-consuming step.
 
-The need for data is omnipresent within Language Technology projects, and not the least when it comes to data produced by second language (L2) learners. Not only the L2 data is sensitive in nature and requires (agreements for use of) associated socio-demographic information, but it also demonstrates a good deal of deviations from the language norms to be analyzed with existing NLP tools. Preparation of L2 data for NLP experiments is therefore very demanding, where annotation of norm deviations (error annontation) is probably the most time-consuming step.
+Annotation of norm deviations in second-language learner texts (traditionally called error annotation) is typically done with a purpose-built editing tool, using a hierarchical set of error categories (Granger 2009). For example, in ASK (Tenfjord et al. 2006), the editor used is Oxygen\footnote{\tt https://www.oxygenxml.com}}, an XML editor which has been customised with pop-up menus that reflect the chosen set of error categories. Specifically, annotation of an error involves inserting an XML {\em sic} tag with a {\em type} attribute encoding the error category, a {\em desc} attribute endoding the error subcategory, and a {\em corr} attribute encoding the correct (normalised) form of the token or tokens. The XML file can be translated to a presentation format in HTML which can be viewed in a web browser, thereby facilitating proofreading of the annotation.
 
- \ldots
+The basic problem with this kind of approach is that it conflates the conceptually separate stages of (traditionally speaking) error coding, namely, error detection, correction and annotation (Corder 1974, Ellis 1994, Granger 2009, page 266). This is because correction (normalisation, based on a target hypothesis) is carried out as a subtask of error annotation instead of as an independent task, prior to and separate from error annotation. Also, since normalisations are only a by-product of error annotations, the corrected text as a whole is not readily available for inspection after each annotation step, and it may therefore be more cumbersome to produce a consistent normalisation.
 
-One focus of the current work is annotation of norm deviations in L2 texts. \ldots
+In Falko (L{\"u}deling et al.\ 2005) and MERLIN (MERLIN project 2014), target hypothesis corrections have a more independent status in the sense that they are entered in a separate step prior to error annotation, but the normalised text still does not seem to be available in its entirety. To circumvent these problems, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some criteria, and annotating the norm deviations corresponding to the changes.
 
-\section{Transformation-based Annotation}
+\section{The Problem of Normalisation}
 
-Annotation of norm deviations in second-language learner texts (traditionally called error annotation) is typically done with a purpose-built editing tool, using a hierarchical set of error categories (Granger 2009). For example, in ASK (Tenfjord et al. 2006), the editor used is Oxygen (https://www.oxygenxml.com), an XML editor which has been customised with pop-up menus that reflect the chosen set of error categories. Specifically, annotation of an error involves inserting an XML {\em sic} tag with a {\em type} attribute encoding the error category, a {\em desc} attribute endoding the error subcategory, and a {\em corr} attribute encoding the correct (normalised) form of the token or tokens. The XML annotation can be translated to a presentation format in HTML which can be viewed in a web browser, thereby facilitating proofreading.
+Normalisation involves, for each deviation from the norm, to decide on a target hypothesis and to edit the text to mirror this hypothesis. We allow edit operations of characters and tokens, involving insertions, deletions, substitutions % \textcolor{red}{EV:("substitution" instead of "replacement"?; merge? split? - separate actions or as variants of replacement, insertion and deletion?)} and move \textcolor{red}{EV:(Is it a term?)}
+or moves (see Section~\ref{sec:norm_tool}). By keeping track of the sequence of edit operations, an additional advantage could be gained, namely, that a preliminary error annotation can be automatically inferred (see Section~\ref{sec:ann_tool}). This is something that we plan to explore later on in the project.
 
-The basic problem with this kind of approach is that it conflates the conceptually separate stages of (traditionally speaking) error coding, namely, error detection, correction and annotation (Corder 1974, Ellis 1994, Granger 2009, page 266). This is because correction (normalisation, based on a target hypothesis) is carried out as a subtask of error annotation instead of as an independent task, prior to and separate from error annotation. Also, since normalisations are only a by-product of error annotations, the corrected text as a whole is not available for inspection after each successive correction step, and it may therefore be more difficult to produce a reliable and consistent normalisation.
-
-In Falko (L{\"u}deling et al.\ 2005) and MERLIN (MERLIN project 2014), target hypothesis corrections have a more independent status in the sense that they are entered in a separate step prior to error annotation, but the normalised text still does not seem to be available in its entirety. To circumvent these problems, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some guideline, and annotating the norm deviations corresponding to the changes.
-
-\subsection{Target Hypotheses and Normalisation}
-
-Normalisation involves, for each deviation from the norm, to decide on a target hypothesis and to edit the text to mirror this hypothesis. We take an editing operation to be insertion, deletion, replacement \textcolor{red}{EV:("substitution" instead of "replacement"?; merge? split? - separate actions or as variants of replacement, insertion and deletion?)} and move \textcolor{red}{EV:(Is it a term?)}
-of one or several tokens \textcolor{red}{(EV: what about characters?)}. By keeping track of the sequence of such editing operations, an additional advantage could be gained, namely, that a basic, preliminary error annotation could be automatically inferred. We plan to explore this possibility later in the project.
-
-To facilitate normalisation and to support reliability and consistency,
-we use three panes (see Figure~\ref{fig:screenshot}): one containing the
-frozen source text, one in which the editing takes place, and one in which
-changes are highlighted. It might be argued that insertions, deletions and
-replacements could be calculated automatically from the differences between
-the source and normalised texts without logging the editing operations, but
-moves of tokens (which we need in order to keep track of word-order changes)
-is more difficult to calculate, which is why we log the editing operations.
+It might be argued that insertions, deletions and
+replacements could be calculated automatically from the differences between the source and normalised texts without logging the edit operations, but moves of tokens (which we need in order to keep track of word-order changes) result in added complexity \cite{ShapiraStorer2007}, which is why we log the editing operations.
 
 \begin{figure*}
 \includegraphics[width=\textwidth, trim={0 1cm 0 0}, clip]{screenshot.pdf}
@@ -92,25 +81,34 @@ showing how words have been moved.
 
 % Should this be here or in related work? I added a blurb about Hana et al's work /Dan
 Some systems allow for multiple (vertical) levels of target hypotheses. In the Czech learner corpus of \newcite{Hana2014} a
-first level normalises grammatical forms without context information. All other deviations (e.g. word order) belong to a second level and take the whole sentence into consideration.
-In MERLIN (MERLIN project 2014) two levels are used: a) minimal corrections pertaining only to orthographic and grammatical errors and b) corrections to handle sociolinguistic, lexical and pragmatic deviations to arrive at what is referred to as an acceptable text. This could be handled in our approach by maintaining several levels of aligned normalisations. The first level (with basic corrections) would then be aligned to the source text, and the second level (with additional corrections) would be aligned to the first level. Adding several levels is something that we have not undertaken yet, however. We also do not handle multiple {\em competing} target hypotheses for the same source material in the manner of L{\"u}deling et al. (2005) \textcolor{red}{(EV: should also provide page)}.\footnote{An example of this from L{\"u}deling et al. (ibid.) is "diese Ph{\"a}nomen" which could be interpreted either as a gender error (with the target hypothesis "dieses Ph{\"a}nomen") or as a number error (with the target hypothesis "diese Ph{\"a}nomene").} In principle, this could be handled in our approach by maintaining different normalisations on the same level for a given part of the source text.
+first level normalises grammatical forms without context information. All other deviations (e.g.\ word order) belong to a second level and take the whole sentence into consideration.
+In MERLIN (MERLIN project 2014) two levels are used: a) minimal corrections pertaining only to orthographic and grammatical errors and b) corrections to handle sociolinguistic, lexical and pragmatic deviations to arrive at what is referred to as an acceptable text. This could be handled in our approach by maintaining several levels of aligned normalisations. The first level (with basic corrections) would then be aligned to the source text, and the second level (with additional corrections) would be aligned to the first level. Adding several levels is something that we have not undertaken yet, however.
+
+We also do not handle multiple {\em competing} target hypotheses for the same source material in the manner of L{\"u}deling et al. (2005) \textcolor{red}{(EV: should also provide page)}.\footnote{An example of this from L{\"u}deling et al. (ibid.) is "diese Ph{\"a}nomen" which could be interpreted either as a gender error (with the target hypothesis "dieses Ph{\"a}nomen") or as a number error (with the target hypothesis "diese Ph{\"a}nomene").} In principle, this could be dealt with in our approach by maintaining different normalisations on the same level for a given part of the source text.
 
 \section{Design of our normalisation tool}
+\label{sec:norm_tool}
 
 We set off to build a normalisation tool to be both simple and expressive.
 We wanted it to have the feel of a conventional text editor and yet retain
-information about how a word was normalised or where it was moved to. To be
+information about how a word was normalised or where it was moved to.
+
+To facilitate normalisation and to support reliability and consistency,
+we use four panes (see Figure~\ref{fig:screenshot}): one containing the
+frozen source text, one in which the editing takes place, one in which
+changes are highlighted, and finally one which shows links between tokens in the source text and normalised text. 
+% Where should this paragraph be?
+We assume that during normalisation, the user can be required to pay attention
+to how their edits affect the links between the source text and the target
+hypothesis. We facilitate this by providing views of their difference and
+the links between them.
+
+To be
 able to answer questions about movement we make the assumption that the text
 can be tokenized. For now we assume that tokens are separated by whitespace
 and cannot contain whitespace themselves. Thus inserting whitespace between
 characters makes a new token and deleting the last whitespace between two
 tokens merges them into one.
-
-% Where should this paragraph be?
-We assume that the user can during normalisation be required to pay attention
-to how their edits affect the links between the source text and the target
-hypothesis. We facilitate this by providing views of their difference and
-the links between them.
 
 For expressing overcompounding and oversplitting we need links between tokens
 that are many-to-one and one-to-many. We express insertion or deletion with
@@ -125,8 +123,8 @@ transitivity.
 We now outline how to instrument a traditional text editor to support links.
 When starting the editing session the source and target are identical so the
 links are initialised with the identity mapping. The user starts editing
-by inserting and deleting characters.
-We generalizing this to each edit which replaces the current selection with a
+by inserting and/or deleting characters.
+We generalize this to each edit which replaces the current selection with a
 string. Usually the selection is just the cursor and the ``replacement'' string
 is one character: then the modification is an insertion.
 If the selection has non-zero width the user did an actual replacement.
@@ -204,8 +202,10 @@ switch to a more sophisticated data structure such as sequences built on
 top of finger trees, which admit updates in logarithmic time.
 
 \section{Annotation of Norm Deviations}
+\label{sec:ann_tool}
 
-%
+(1) Do we perform the annotations (only) in the source text? (2) Select tokens, invoke pop-up menues showing the error categories and subcategories. (3) A preliminary error annotation can be automatically inferred. This is something that we plan to explore later on in the project.
+
 We want to support annotating the edits from the normalisation with a taxonomy
 of norm deviations.  The intent is to put labels on components of links.
 This can be done after normalising the text, but we can go back and forth
