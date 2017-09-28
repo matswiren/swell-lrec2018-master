@@ -64,13 +64,13 @@ desc} attribute endoding the error subcategory, and a {\em corr} attribute
 encoding the correct (normalised) form of the token or tokens.
 While editing the XML file it is translated to a presentation format in HTML
 which can be viewed in a web browser, thereby facilitating proofreading of
-the annotation.
 
 The basic problem with this kind of approach is that it conflates the conceptually separate stages of (traditionally speaking) error coding, namely, error detection, correction and annotation (Corder 1974, Ellis 1994, Granger 2009, page 266). This is because correction (normalisation, based on a target hypothesis) is carried out as a subtask of error annotation instead of as an independent task, prior to and separate from error annotation. Also, since normalisations are only a by-product of error annotations, the corrected text as a whole is not readily available for inspection after each annotation step, and it may therefore be more cumbersome to produce a consistent normalisation.
 
-In Falko
 \cite{ludeling05multi-levelerror}
-and MERLIN (MERLIN project 2014), target hypothesis corrections have a more independent status in the sense that they are entered in a separate step prior to error annotation, but the normalised text still does not seem to be available in its entirety. To circumvent these problems, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some criteria, and annotating the norm deviations corresponding to the changes.
+and MERLIN (MERLIN project 2014), target hypothesis corrections have a more independent status in the sense that they are entered in a separate step prior to error annotation, but the normalised text still does not seem to be available in its entirety.
+
+To circumvent these problems, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some criteria, and annotating the norm deviations corresponding to the changes.
 
 \section{The Problem of Normalisation}
 
@@ -181,15 +181,15 @@ structure. To move a sequence of words the user selects a range
 which includes these words and presses the shortcut for cutting: {\it Ctrl+X}.
 This does not yet cut the words but instead highlights them. We expand partially
 selected tokens to whole tokens to simplify this operation. The user then
-navigates to the position they want the words to go and press the paste
+navigates to the position they want the words to go and presses the paste
 shortcut: {\it Ctrl+V}.
 This moves the tokens together with their links to the new position.
 This rearranging operation can also be executed with the mouse using drag and drop.
 % Image with example showing this step by step?
 
-\subparagraph{Undo} We support unlimited chronological undo and redo.
+\subparagraph{Undo} We support unlimited chronological undo and redo operations.
 For convenience we also support undo at a specific position. % in the hypothesis.
-If this position is part of a compound of the entire compound is reverted.
+If this position is part of a compound of the entire compound is reverted. %EV: don't understand this sentence. One "of" is too much?
 Tokens are rearranged into their original positions, which
 can be recovered using unmoved words as reference points.
 Undoing is very useful to get links exactly right, which occasionally takes a
