@@ -18,6 +18,9 @@
 
 \newcommand{\secref}[1]{\StrSubstitute{\getrefnumber{#1}}{.}{ }}
 
+\newcommand{\commmentDan}[1]{\color{purple}{#1}}
+
+
 \title{Transformation-based Annotation of Norm Deviations \\ in an Infrastructure for Research on Swedish as a Second Language}
 
 \name{Author1, Author2, Author3}
@@ -46,13 +49,28 @@ analysis of proficiency levels, norm-deviation (error) annotation, and linguisti
 \item expertise within the relevant areas.
 \end{enumerate}
 
-The need for data is omnipresent within language technology projects, not the least when it comes to data produced by second language (L2) learners. Not only is the L2 data sensitive in nature and requires (agreements for use of) associated socio-demographic information, but it also demonstrates significant deviations from the norms that can standard tools for natural-language processing (NLP) are tailored for. Preparation of L2 data for NLP experiments is therefore very demanding, and annotation of norm deviations (errors) is arguably the most time-consuming step.
+The need for data is omnipresent within language technology projects, not the least when it comes to data produced by second language (L2) learners. Not only is the L2 data sensitive in nature and requires (agreements for use of) associated socio-demographic information, but it also demonstrates significant deviations from the norms than standard tools for natural-language processing (NLP) are tailored for. Preparation of L2 data for NLP experiments is therefore very demanding, and annotation of norm deviations (errors) is arguably the most time-consuming step.
 
-Annotation of norm deviations in second-language learner texts (traditionally called error annotation) is typically done with a purpose-built editing tool, using a hierarchical set of error categories (Granger 2009). For example, in ASK (Tenfjord et al. 2006), the editor used is Oxygen\footnote{\tt https://www.oxygenxml.com}}, an XML editor which has been customised with pop-up menus that reflect the chosen set of error categories. Specifically, annotation of an error involves inserting an XML {\em sic} tag with a {\em type} attribute encoding the error category, a {\em desc} attribute endoding the error subcategory, and a {\em corr} attribute encoding the correct (normalised) form of the token or tokens. The XML file can be translated to a presentation format in HTML which can be viewed in a web browser, thereby facilitating proofreading of the annotation.
+Annotation of norm deviations in second-language learner texts (traditionally
+called error annotation) is typically done with a purpose-built editing tool,
+using a hierarchical set of error categories (Granger 2009). For example,
+in ASK (Tenfjord et al. 2006), the editor used is the XML editor Oxygen,
+% I don't think we need to refer to this editor?
+% \footnote{\url{https://www.oxygenxml.com}},
+customised with pop-up menus that reflect the chosen set of error
+categories. Specifically, annotation of an error involves inserting an XML
+{\em sic} tag with a {\em type} attribute encoding the error category, a {\em
+desc} attribute endoding the error subcategory, and a {\em corr} attribute
+encoding the correct (normalised) form of the token or tokens.
+While editing the XML file it is translated to a presentation format in HTML
+which can be viewed in a web browser, thereby facilitating proofreading of
+the annotation.
 
 The basic problem with this kind of approach is that it conflates the conceptually separate stages of (traditionally speaking) error coding, namely, error detection, correction and annotation (Corder 1974, Ellis 1994, Granger 2009, page 266). This is because correction (normalisation, based on a target hypothesis) is carried out as a subtask of error annotation instead of as an independent task, prior to and separate from error annotation. Also, since normalisations are only a by-product of error annotations, the corrected text as a whole is not readily available for inspection after each annotation step, and it may therefore be more cumbersome to produce a consistent normalisation.
 
-In Falko (L{\"u}deling et al.\ 2005) and MERLIN (MERLIN project 2014), target hypothesis corrections have a more independent status in the sense that they are entered in a separate step prior to error annotation, but the normalised text still does not seem to be available in its entirety. To circumvent these problems, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some criteria, and annotating the norm deviations corresponding to the changes.
+In Falko
+\cite{ludeling05multi-levelerror}
+and MERLIN (MERLIN project 2014), target hypothesis corrections have a more independent status in the sense that they are entered in a separate step prior to error annotation, but the normalised text still does not seem to be available in its entirety. To circumvent these problems, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some criteria, and annotating the norm deviations corresponding to the changes.
 
 \section{The Problem of Normalisation}
 
@@ -96,7 +114,7 @@ information about how a word was normalised or where it was moved to.
 To facilitate normalisation and to support reliability and consistency,
 we use four panes (see Figure~\ref{fig:screenshot}): one containing the
 frozen source text, one in which the editing takes place, one in which
-changes are highlighted, and finally one which shows links between tokens in the source text and normalised text. 
+changes are highlighted, and finally one which shows links between tokens in the source text and normalised text.
 % Where should this paragraph be?
 We assume that during normalisation, the user can be required to pay attention
 to how their edits affect the links between the source text and the target
@@ -189,8 +207,8 @@ this clear highlighting of differences works as an aid for the user.
 \paragraph{Implementation}
 We have implemented a working prototype as a single-page web application.
 It does not rely on any server backend: all processing is done in the
-client's browser. We use an off-the-shelf editor for web applications,
-CodeMirror\footnote{\url{https://codemirror.net}},
+client's browser. We use an off-the-shelf editor for the browser,
+CodeMirror \cite{CodeMirror},
 instrumented as described in this section.
 Internally we keep an array of the tokens in the target text together with
 which indexes of the source tokens it links to.  We only use immutable data
