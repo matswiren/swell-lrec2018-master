@@ -143,7 +143,7 @@ We now outline how to instrument a traditional text editor to support links.
 When starting the editing session the source and target are identical so the
 links are initialised with the identity mapping. The user starts editing
 by inserting and/or deleting characters.
-We generalize this to each edit which replaces the current selection with a
+We generalise this to each edit which replaces the current selection with a
 string. Usually the selection is just the cursor and the ``replacement'' string
 is one character: then the modification is an insertion.
 If the selection has non-zero width the user did an actual replacement.
@@ -223,7 +223,11 @@ top of finger trees, which admit updates in logarithmic time.
 \section{Annotation of Norm Deviations}
 \label{sec:ann_tool}
 
-(1) Do we perform the annotations (only) in the source text? (2) Select tokens, invoke pop-up menues showing the error categories and subcategories. (3) A preliminary error annotation can be automatically inferred. This is something that we plan to explore later on in the project.
+(1) Do we perform the annotations (only) in the source text?
+(2) Select tokens, invoke pop-up menues showing the error categories and
+subcategories.
+(3) A preliminary error annotation can be automatically inferred. This is
+something that we plan to explore later on in the project.
 
 We want to support annotating the edits from the normalisation with a taxonomy
 of norm deviations.  The intent is to put labels on components of links.
