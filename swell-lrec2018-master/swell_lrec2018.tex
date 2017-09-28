@@ -57,6 +57,15 @@ analysis of proficiency levels, norm-deviation (error) annotation, and linguisti
 
 The need for data is omnipresent within language technology projects, not the least when it comes to data produced by second language (L2) learners. Not only is the L2 data sensitive in nature and requires (agreements for use of) associated socio-demographic information, but it also demonstrates significant deviations from the norms that standard tools for natural-language processing (NLP) are tailored for. Preparation of L2 data for NLP experiments as well as for effective Second Language Acquisition (SLA) research analysis is therefore very demanding, and annotation of norm deviations (errors) is arguably the most time-consuming step.
 
+Terms: norm deviation, normalization, interlanguage, ...
+We introduce the term norm deviation as an alternative to error as a result of dicussions with L2 specialists, who view on learner language not from the point of view of the errors, but as a transition language with its own rules, and from this point of view learners do not make mistakes. 
+
+...
+
+Related work: Johannes Gräen? various tools in Merlin, BRAT, webanno, exmaralda 
+
+...
+
 Annotation of norm deviations in second-language learner texts (traditionally
 called error annotation) is typically done with a purpose-built editing tool,
 using a hierarchical set of error categories (Granger 2009). For example,
@@ -111,7 +120,7 @@ showing how words have been moved.
 % Should this be here or in related work? I added a blurb about Hana et al's work /Dan
 Some systems allow for multiple (vertical) levels of target hypotheses. In the Czech learner corpus of \newcite{Hana2012} a
 first level normalises grammatical forms without context information. All other deviations (e.g.\ word order) belong to a second level and take the whole sentence into consideration.
-In MERLIN (MERLIN project 2014) two levels are used: a) minimal corrections pertaining only to orthographic and grammatical errors and b) corrections to handle sociolinguistic, lexical and pragmatic deviations to arrive at what is referred to as an acceptable text. This could be handled in our approach by maintaining several levels of aligned normalisations. The first level (with basic corrections) would then be aligned to the source text, and the second level (with additional corrections) would be aligned to the first level. Adding several levels is something that we have not undertaken yet, however.
+In MERLIN \cite{MERLIN2014} two levels are used: a) minimal corrections pertaining only to orthographic and grammatical errors and b) corrections to handle sociolinguistic, lexical and pragmatic deviations to arrive at what is referred to as an acceptable text. This could be handled in our approach by maintaining several levels of aligned normalisations. The first level (with basic corrections) would then be aligned to the source text, and the second level (with additional corrections) would be aligned to the first level. Adding several levels is something that we have not undertaken yet, however.
 
 We also do not handle multiple {\em competing} target hypotheses for the same source material in the manner of L{\"u}deling et al. (2005, Section 2.1).\footnote{An example of this from L{\"u}deling et al. (2005) is "diese Ph{\"a}nomen" which could be interpreted either as a gender error (with the target hypothesis "dieses Ph{\"a}nomen") or as a number error (with the target hypothesis "diese Ph{\"a}nomene").} In principle, this could be dealt with in our approach by maintaining different normalisations on the same level for a given part of the source text.
 
@@ -300,7 +309,7 @@ Note to reviewers: this is the scheduled to be completed in a few weeks
 will be completed well before the camera-ready version.
 %
 
-Elena: Also something about about our intended error categories?
+Elena: Also something about about our intended error categories? Yes, I will add a bit on this
 
 \section{Discussion}
 
@@ -315,6 +324,9 @@ and disconnect links directly in the ladder diagram. This should also be
 possible by using keyboard shortcuts in the editor.  Frequent operations
 such as transposing words can also get dedicated keyboard bindings.
 
+The approach in general can be applied to other scenarios, where parallel versions and (documented?) differences between them are vital for developing automated tool for the purpose, e.g. text simplification, standardizing short message texts, ...
+
+
 \section{Conclusion}
 
 Your submission of a finalised contribution for inclusion in the LREC
@@ -322,13 +334,14 @@ proceedings automatically assigns the above-mentioned copyright to ELRA.
 
 \section{Acknowledgements}
 
-Felix Hultin \cite{correctAnnotator} (also put in introduction / background)
+This work has been supported by an infrastructure grant from the Swedish Riksbankens Jubileumsfond (SweLL - research infrastructure for Swedish as a second language, project IN16-0464:1).
+
+Felix Hultin \cite{correctAnnotator} (also put in introduction / background) 
 
 Comments and feedback on the annotation tool from
 Markus Forsberg, Lars Borin and Beata Megyesi
 
-Place all acknowledgements (including those concerning research grants and
-funding) in a separate section at the end of the article.
+What about Robert Östling?
 
 \begin{comment}
 \section{Providing References}
