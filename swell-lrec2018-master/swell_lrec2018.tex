@@ -8,7 +8,9 @@
 \usepackage{color}
 % for eps graphics
 
-\usepackage[normalem]{ulem}
+\usepackage{verbatim} % comment environment
+
+\usepackage[normalem]{ulem} % overstrike \sout{..}
 
 \usepackage{epstopdf}
 \usepackage[utf8]{inputenc}
@@ -23,12 +25,13 @@
 
 \title{Transformation-based Annotation of Norm Deviations \\ in an Infrastructure for Research on Swedish as a Second Language}
 
-\name{Author1, Author2, Author3}
+\name{Dan Rosén, Mats Wirén, Elena Volodina}
 
-\address{Affiliation1, Affiliation2, Affiliation3 \\
-         Address1, Address2, Address3 \\
-         author1@xxx.yy, author2@zzz.edu, author3@hhh.com\\
-         \{author1, author5, author9\}@abc.org\\}
+\address{Språkbanken, Stockholms Universitet, Språkbanken\\
+%         Address1, Address2, Address3 \\
+         dan.rosen@svenska.gu.se, mats.wiren@ling.su.se, elena.volodina@svenska.gu.se\\
+%         \{author1, author5, author9\}@abc.org\\
+         }
 
 \abstract{
 This paper describes ongoing work on a system for annotation of deviations (errors) relative to the norm in second-language learner texts, which is a key component of an intended infrastructure for research on Swedish as a second language. Unlike traditional approaches which treat this as a single task applied to a static learner text, our approach is divided into two successive steps to reflect the conceptual structure of the problem: a) normalisation  of the learner text by transforming (editing) it to reflect the target hypotheses, and b) the actual norm-deviation annotation, supported by visualisation of the differences between source and normalisation. Another distinct feature of our approach is that a parallel text is generated in the transformation step, with word alignments inferred from the editing operations. This parallel text is a useful resource in its own right, by allowing for search in either or both of the source and normalised texts, and for training of systems for automated annotation of norm deviations. We describe the existing system for normalisation and outline the associated system for norm-deviation annotation currently being implemented, as well as the overall intended workflow [190 words out of 200 allowed].}
@@ -99,7 +102,7 @@ showing how words have been moved.
 \end{figure*}
 
 % Should this be here or in related work? I added a blurb about Hana et al's work /Dan
-Some systems allow for multiple (vertical) levels of target hypotheses. In the Czech learner corpus of \newcite{Hana2014} a
+Some systems allow for multiple (vertical) levels of target hypotheses. In the Czech learner corpus of \newcite{Hana2012} a
 first level normalises grammatical forms without context information. All other deviations (e.g.\ word order) belong to a second level and take the whole sentence into consideration.
 In MERLIN (MERLIN project 2014) two levels are used: a) minimal corrections pertaining only to orthographic and grammatical errors and b) corrections to handle sociolinguistic, lexical and pragmatic deviations to arrive at what is referred to as an acceptable text. This could be handled in our approach by maintaining several levels of aligned normalisations. The first level (with basic corrections) would then be aligned to the source text, and the second level (with additional corrections) would be aligned to the first level. Adding several levels is something that we have not undertaken yet, however.
 
@@ -263,6 +266,7 @@ proceedings automatically assigns the above-mentioned copyright to ELRA.
 Place all acknowledgements (including those concerning research grants and
 funding) in a separate section at the end of the article.
 
+\begin{comment}
 \section{Providing References}
 
 \subsection{Bibliographical References}
@@ -321,6 +325,7 @@ language resources, the following steps need to be performed:
     \item{Invoke \texttt{bibtex} on the \texttt{languageresources.aux} file}
     \item{Compile the \texttt{.tex} file twice}
 \end{itemize}
+\end{comment}
 
 % \nocite{*}
 \section{Bibliographical References}
@@ -329,10 +334,9 @@ language resources, the following steps need to be performed:
 \bibliographystyle{lrec}
 \bibliography{xample}
 
-
-\section{Language Resource References}
-\label{lr:ref}
-\bibliographystylelanguageresource{lrec}
-\bibliographylanguageresource{xample}
+% \section{Language Resource References}
+% \label{lr:ref}
+% \bibliographystylelanguageresource{lrec}
+% \bibliographylanguageresource{xample}
 
 \end{document}
