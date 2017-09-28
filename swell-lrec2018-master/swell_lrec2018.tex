@@ -117,6 +117,8 @@ replacements could be calculated automatically from the differences between the 
 Below the panes we display the the differences pictorially:
 the source text on top and the target hypothesis below, with edges
 showing how words have been moved.
+\dan{todo on Monday: experiment with other graphical layouts of the edges
+so it doesn't look like {\em stor} and {\em hus} are connected etc}
 % Deletions are shown in \textcolor{red}{red} with \sout{overstrike},
 % insertions in \textcolor{green}{green} with \underline{underline}.
 % (If the text is too long only the current sentence is shown.)
@@ -136,8 +138,7 @@ We also do not handle multiple {\em competing} target hypotheses for the same so
 We set off to build a normalisation tool to be both simple and expressive.
 We wanted it to have the feel of a conventional text editor and yet retain
 information about how a word was normalised or where it was moved to.
-\dan{Comment that we did not find any tool fulfilling our requirements?
-Can we list our requirements?}
+\dan{Comment that we did not find any tool fulfilling our wishes/requirements?}
 
 To facilitate normalisation and to support reliability and consistency,
 we use four panes (see Figure~\ref{fig:screenshot}): one containing the
@@ -253,7 +254,7 @@ The user first changes \verb!stan! to \verb!påstan!, which is still one token.
 When the user inserts the space after \verb!på!, making \verb!på stan!, we do
 not link both of these to the original \verb!stan!,
 but instead break off \verb!på!.
-However, if this is not the analysis the user wants the link to represent,
+However, if this is not the analysis the user wants the links to represent,
 they undo this automatic behaviour by pressing {\it Ctrl-Z},
 yielding this\footnote{\dan{Not yet in the interface, but the fix is minuscle.}}:
 
@@ -270,15 +271,13 @@ Jag gick på |stan
 % tokens into exaclty what they were
 % but this is entirely straightforward and relatively uninteresting.
 
-\dan{Improve this paragraph: the most important thing (that we can handle
-rearranging words / word order usign cut and paste is hidden in the middle!
-}\\
-This generalisation of replacing a selection with a string handles most
-edit operations, and includes derived operations such as search and replace
+\paragraph{Word order normalisation as cut \& paste}
+Viewing edits abstractly as replacing a selection with a string encompasses
+edit operations, including derived operations such as search and replace,
 which can be seen as a sequence of edits. However, cut \& paste needs to
-be modified to work intuitively. But it so turns out that we can capture
-normalising word order by making cut and paste aware of the link
-structure. To move a sequence of words the user selects a range
+be modified to work intuitively. We modify them in a way so they capture
+word order normalisation by making them aware of the link structure.
+So, to move a sequence of words the user selects a range
 which includes these words and presses the shortcut for cutting: {\it Ctrl+X}.
 This does not yet cut the words but instead highlights them. We expand partially
 selected tokens to whole tokens to simplify this operation. The user then
@@ -286,7 +285,7 @@ navigates to the position they want the words to go and presses the paste
 shortcut: {\it Ctrl+V}.
 This moves the tokens together with their links to the new position.
 This rearranging operation can also be executed with the mouse using drag and drop.
-% Image with example showing this step by step?
+\dan{Intend to add image with example showing this step by step}
 
 \subparagraph{Undo} We support unlimited chronological undo and redo operations.
 For convenience we also support undo at a specific position. % in the hypothesis.
@@ -309,38 +308,33 @@ this clear highlighting of differences works as an aid for the user.
 We have implemented a working prototype as a single-page web application.
 It does not rely on any server backend: all processing is done in the
 client's browser. We use an off-the-shelf editor for the browser,
-CodeMirror \cite{CodeMirror},
-instrumented as described in this section.
-Internally we keep an array of the tokens in the target text together with
-which indexes of the source tokens it links to.  We only use immutable data
-structures for ease of implementation,  which could be an efficiency problem:
-it makes array operations linear in the number of tokens. Should
-this prove too slow for long texts it can be improved by restricting move
-operations, for example allowing them only within paragraphs. Another alternative is to
-switch to more sophisticated data structures such as ropes or sequences built on
-top of finger trees, which both admit updates in sublinear time.
+CodeMirror \cite{CodeMirror}.
+Besides the CodeMirror's internal state, we keep an array of the tokens in the
+target text together with links as indexes of tokens in the source,
+and keep this in sync with the CodeMirror editor as described in this section.
+
+The normalisation editor may also be used as a library and can in this way
+be included in other tools and webpages.
+\dan{Should we link to a demo version of the editor? Do LREC reviewers care
+about running tools? It would be a good complement nevertheless.}
+\dan{MIT License? This is what I have been supposing since it is the standard at SB}
+
+% We only use immutable data
+% structures for ease of implementation,  which could be an efficiency problem:
+% it makes array operations linear in the number of tokens. Should
+% this prove too slow for long texts it can be improved by restricting move
+% operations, for example allowing them only within paragraphs. Alternatively,
+% more sophisticated data structures could be used, such as ropes or sequences
+% built on top of finger trees, which both admit updates in sublinear time.
 % Could refer to Hinze's article
+% I don't think anyone cares
 
 \section{Annotation of Norm Deviations}
 \label{sec:ann_tool}
 
-Norm deviations say something about the source (learner) text,
-so we want to put labels on that text.
-In the case of insertions we say that there is
-a (dummy) empty string that we can label.
-However, our representation links each source token with (one or many)
-token in the target hypothesis text.
-(See the graph in Figure~\ref{fig:screenshot})
-Hence, we can label the edges instead of the source text.
-This gives us the advantage that any part of the interface
-can be used to annotate the norm deviations.
-The user can click a word in the source text and choose
-a norm deviation label from a menu. Or, they can click
-on the graph directly. Or in any of the other two panes,
-since they are all connected via the links.
-
-The norm deviation annotations are put on the links: on the entire connected component,
-like so \dan{in ascii art for now}:
+We support annotating the edits from the normalisation with a taxonomy
+of norm deviations.  The norm deviation annotations are put on the links:
+on the entire connected component, like so \dan{in ascii art for now}:
 
 \begin{verbatim}
 person nummer
@@ -352,40 +346,42 @@ person nummer
 
 For simplicity the labels range over an entire connected
 component in the graph.
-Should this level of granularity prove too restrictive
-it can be lifted to allow labelling individual edges or tokens.
+\footnote{Should this level of granularity prove too restrictive
+it can be lifted to allow labelling individual edges or tokens.}
 
-(1) Do we perform the annotations (only) in the source text?
-\textbf{No:} from any part in the interface
+By putting the labels on components of edges
+(rather than the alternative to put them on the source tokens)
+gives the advantage that any part of the interface
+can be used to annotate the norm deviations:
+the user may click words in the source text and choose
+a norm deviation label from a menu. Or, they can click
+on the graph directly. Or in any of the other two panes,
+since they are all connected via the links.
+Further, insertions (due to missing words) do not correspond to any token
+in the source text so it would not work to only put labels on the
+source text.
 
-(2) Select tokens, invoke pop-up menues showing the error categories and
-subcategories.
-\textbf{Yes.}
+The norm deviation annotation can be done after normalising the text,
+but we can go back and forth between the modes if the annotator want to
+improve the normalisation.
 
-(3) A preliminary error annotation can be automatically inferred. This is
+A preliminary error annotation can be automatically inferred. This is
 something that we plan to explore later on in the project.
-\textbf{Yes:} emphasise that many deviation labels will be easy to infer
-even without any linguistic insight,
-in particular: missing word, redundant word, word order,
-but also: overcompounding, oversplitting.
-Inferring labels can be done in a modular fashion, adding more as the
-project continues.
+Many deviation labels will be easy to infer even without any linguistic
+insight, in particular: missing word, redundant word, word order, but also:
+overcompounding, oversplitting.
+Automatic label suggestion can be done independently of the rest of the user interface,
+like a plugin, and adding more heuristics as the project continues.
 For example, in a suffixing language like Swedish we could have heuristics
 that detect if tense or determinancy has been transformed, and give
 suggestions automatically for relevant labels.
 
-We want to support annotating the edits from the normalisation with a taxonomy
-of norm deviations.  The intent is to put labels on components of links.
-This can be done after normalising the text, but we can go back and forth
-between the modes if the annotator want to improve the normalisation.
-
-Note to reviewers: this is the scheduled to be completed in a few weeks
-will be completed well before the camera-ready version.
-%
 For ergonomics, when using the tool for several hours a day,
 we also provide keyboard bindings for labelling and navigating between
 the linked components.
-%
+
+Note to reviewers: this is the scheduled to be completed in a few weeks
+will be completed well before the camera-ready version.
 
 Note that we can use the same system for anonymizing the text
 by setting a special anonymization label. We (hope) that we can
