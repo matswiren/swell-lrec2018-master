@@ -20,7 +20,7 @@
 
 \newcommand{\secref}[1]{\StrSubstitute{\getrefnumber{#1}}{.}{ }}
 
-\newcommand{\commmentDan}[1]{\color{purple}{#1}}
+\newcommand{\commentDan}[1]{{\color{red}{Dan: #1}}}
 
 
 \title{Transformation-based Annotation of Norm Deviations \\ in an Infrastructure for Research on Swedish as a Second Language}
@@ -89,7 +89,7 @@ Normalisation involves, for each deviation from the norm, to decide on a target 
 or moves (see Section~\ref{sec:norm_tool}). By keeping track of the sequence of edit operations, an additional advantage could be gained, namely, that a preliminary error annotation can be automatically inferred (see Section~\ref{sec:ann_tool}). This is something that we plan to explore later on in the project.
 
 It might be argued that insertions, deletions and
-replacements could be calculated automatically from the differences between the source and normalised texts without logging the edit operations, but moves of tokens (which we need in order to keep track of word-order changes) result in added complexity \cite{ShapiraStorer2007}, which is why we log the editing operations.
+replacements could be calculated automatically from the differences between the source and normalised texts without logging the edit operations, but moves of tokens (which we need in order to keep track of word-order changes) result in added complexity \cite{ShapiraStorer2007} and ambiguities, which is why we log the editing operations.
 
 \begin{figure*}
 \includegraphics[width=\textwidth, trim={0 1cm 0 0}, clip]{screenshot.pdf}
@@ -224,20 +224,72 @@ instrumented as described in this section.
 Internally we keep an array of the tokens in the target text together with
 which indexes of the source tokens it links to.  We only use immutable data
 structures for ease of implementation,  which could be an efficiency problem:
-it makes array operations linear in the length of the text. Should
+it makes array operations linear in the number of tokens. Should
 this prove too slow for long texts it can be improved by restricting move
-operations to only be within, say, paragraphs. Another alternative is to
+operations, for example allowing them only within paragraphs. Another alternative is to
 switch to a more sophisticated data structure such as sequences built on
 top of finger trees, which admit updates in logarithmic time.
+% Could refer to Hinze's article
 
 \section{Annotation of Norm Deviations}
 \label{sec:ann_tool}
 
+\commentDan{a memory dump}
+
+Norm deviations say something about the source (learner) text,
+so we want to put labels on that text.
+
+In the case of insertions we say that there is
+a (dummy) empty string that we can label.
+
+However, our representation links each source token with (one or many)
+token in the target hypothesis text.
+
+(See the graph in Figure~\ref{fig:screenshot})
+
+Hence, we can label the edges instead of the source text!
+
+This gives us the advantage that any part of the interface
+can be used to annotate the norm deviations.
+The user can click a word in the source text and choose
+a norm deviation label from a menu. Or, they can click
+on the graph directly. Or in any of the other two panes,
+since they are all connected via the links.
+
+The norm deviation annotations are put on the links: on the entire connected component, like so:
+\footnote{temporary ascii art for now}
+
+\begin{verbatim}
+person nummer
+  \     /
+   [SPL]
+     |
+ personnummer
+\end{verbatim}
+
+For simplicity the labels range over an entire connected
+component in the graph.
+Should this level of granularity prove too restrictive
+it can be lifted to allow labelling individual edges or tokens.
+
 (1) Do we perform the annotations (only) in the source text?
+{\textbf No:} from any part in the interface
+
 (2) Select tokens, invoke pop-up menues showing the error categories and
 subcategories.
+{\textbf Yes.}
+
 (3) A preliminary error annotation can be automatically inferred. This is
 something that we plan to explore later on in the project.
+{\textbf Yes:} emphasise that many deviation labels will be easy to infer
+even without any linguistic insight,
+in particular: missing word, redundant word, word order,
+but also: overcompounding, oversplitting.
+Inferring labels can be done in a modular fashion, adding more as the
+project continues.
+For example, in a suffixing language like Swedish we could have heuristics
+that detect if tense or determinancy has been transformed, and give
+suggestions automatically for relevant labels.
 
 We want to support annotating the edits from the normalisation with a taxonomy
 of norm deviations.  The intent is to put labels on components of links.
