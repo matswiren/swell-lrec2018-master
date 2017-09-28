@@ -214,7 +214,7 @@ instrumented as described in this section.
 Internally we keep an array of the tokens in the target text together with
 which indexes of the source tokens it links to.  We only use immutable data
 structures for ease of implementation,  which could be an efficiency problem:
-it makes makes array operations linear in the length of the text. Should
+it makes array operations linear in the length of the text. Should
 this prove too slow for long texts it can be improved by restricting move
 operations to only be within, say, paragraphs. Another alternative is to
 switch to a more sophisticated data structure such as sequences built on
