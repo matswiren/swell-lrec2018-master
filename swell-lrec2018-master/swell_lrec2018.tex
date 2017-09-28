@@ -143,7 +143,7 @@ We now outline how to instrument a traditional text editor to support links.
 When starting the editing session the source and target are identical so the
 links are initialised with the identity mapping. The user starts editing
 by inserting and/or deleting characters.
-We generalise this to each edit which replaces the current selection with a
+We generalise this to each edit replacing the current selection with a
 string. Usually the selection is just the cursor and the ``replacement'' string
 is one character: then the modification is an insertion.
 If the selection has non-zero width the user did an actual replacement.
