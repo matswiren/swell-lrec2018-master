@@ -50,7 +50,7 @@ This paper describes ongoing work on a system for annotation of norm deviations 
 
 \section{Background and Introduction}
 
-This work is carried out within the SweLL project, whose goal is to construct an electronic research infrastructure for Swedish as a second language. We take an electronic research infrastructure to consist of the following components:
+This work is carried out within the SweLL project, whose goal is to construct an electronic research infrastructure for Swedish as a second language. We take an electronic research infrastructure to consist of the following components: \elena{maybe we can shorten this list?}
 \begin{enumerate}
 \item freely accessible data in electronic format;
 \item a set of tools for data collection and processing, including 
@@ -61,35 +61,27 @@ analysis of proficiency levels, norm-deviation (error) annotation, and linguisti
 
 The need for data is omnipresent within language technology projects, not the least when it comes to data produced by second language (L2) learners. Not only is the L2 data sensitive in nature and requires (agreements for use of) associated socio-demographic information, but it also demonstrates significant deviations from the norms that standard tools for natural-language processing (NLP) are tailored for. Preparation of L2 data for NLP experiments as well as for effective Second Language Acquisition (SLA) research analysis is therefore very demanding, and annotation of norm deviations (i.e. errors) is arguably the most time-consuming step.
 
-We focus here on the tool for annotation of norm deviations in learner texts as one of the necessary components of the SweLL infrastructure. We introduce the term norm deviation in an attempt to step away from the term "error" which is predominantly critical towards learner interlanguage \cite{Selinker1972}, i.e. the developing language system learners create in their minds on the way towards the target language. Connected to this, we use the term normalization, that in this context is understood as modification of a learner text to reflect the norms of the target laguage. 
+We focus here on the tool for annotation of norm deviations in learner texts as one of the necessary components of the SweLL infrastructure. We introduce the term \textit{norm deviation} in an attempt to step away from the term "error" which is predominantly critical towards learner interlanguage \cite{Selinker1972}, i.e. the developing language system learners create in their minds on the way towards the target language. Connected to this, we use the term \textit{normalization}, that in this context is understood as modification of a learner text to reflect the norms of the target language. 
 
-In this paper we develop the idea of transformation-based normalization of learner texts as a primary step in annotation of norm deviations. The origins of the term go to a predecessing pilot within SweLL project \cite{correctAnnotator}, where the idea of logging user actions while editing learner essays was suggested, which in turn has been inspired by the Arabic tool QAWI \cite{QAWI}. We argue that this method is user-friendly and is effective in optimizing manual annotation process through prompting the annotation of norm deviations by comparing original and normalized versions of the same text.
+In this paper we develop the idea of \textit{transformation-based normalization} of learner texts as a primary step in annotation of norm deviations. The origins of the term go to a predecessing pilot within SweLL project \cite{correctAnnotator}, where the idea of logging user actions while editing learner essays was suggested, which in turn has been inspired by the Arabic tool QAWI \cite{QAWI}. We argue that this method is user-friendly and is effective in optimizing manual annotation process through prompting the annotation of norm deviations by comparing original and normalized versions of the same text.
 
 The rest of the paper is structured as follows: in the next section we set the development of our tool into the context of other available tools for annotation of norm deviations. Motivation behind  transformation-based approach to text normalization is provided in section \ref{sec:targethypothesis} The design of the tool (its prototype) is described in section \ref{sec:norm_tool}, followed by the principles for annotation of norm deviations in section \ref{sec:ann_tool} We conclude the paper with discussion and conclusions.
 
 \section{Related work}
 \label{sec:relatedwork}
 
-(Manual) annotation of data for various Language Technology and Digital Humanities projects is a recurring task, which has resulted in a huge number of tools that support annotation of data. Some of the tools are tailored to a particular need (REFs), others are more generic (REFs). Some drawbacks of generic annotators, e.g. WebAnno (REF) or BRAT (REF) consist in their 
-...tricky annotation process; annotations are not structurable and not recyclable (except for BRAT, were annotations can be retrieved as separate objects from the annotated texts); no annotation statistics; no options to perform searches on annotations themselves
+(Manual) annotation of data for various Language Technology and Digital Humanities projects is a recurring task, which has resulted in a huge number of tools that support annotation of data. Some of the tools are tailored to a particular project need (REFs), others are more generic (REFs). Some drawbacks of generic annotators, e.g. WebAnno (REF) or BRAT (REF) consist in their 
+...tricky annotation process; annotations are not structurable and not recyclable; no annotation statistics; no options to perform searches on annotations themselves
 
-Reusing project-specific tools for other projects often entails problems with data formats and their (bidirectional) interoperability, undermining effectiveness of use of these tools \elena{, as for example was the case in MERLIN project with reuse of PAULA, Exmaralda, FALKO excel plugin, ANNIS\footnote{Information obtained through personal communication with Merlin collaborators and access to their analysis of the used technology, documented in the "Black Book"} (REFS; REFS; REFS)}. 
+Reusing project-specific tools for other - similar - projects may entail problems with data formats and lacking (bidirectional) interoperability between the tools, undermining effectiveness of their use \elena{, as for example, was the case in MERLIN project with reuse of PAULA, Exmaralda, and FALKO excel plugin\footnote{Information obtained through personal communication with Merlin collaborators and access to their analysis of the used technology, documented in the "Black Book"} (REFS; REFS; REFS)}. 
 
-Inspiration can, however, come from related areas. Parallel corpora annotation, for example, though seemingly far from L2 corpora, does offer a number of solutions and insights - if L2 corpora are viewed as two versions: original one, that is, written by the learner, and normalized one, that is, a version of the same text with expert introduced corrections. Thus, tools developed in that area, for example REF, could help design tools for L2 annotation.
+On the other hand, tools developed for seemingly unrelated areas, for example for annotation parallel corpora (e.g. REF), can provide a number of solutions and insights - especially, if L2 corpora are viewed as two parallel versions: original one, that is, written by the learner, and normalized one, that is, a version of the same text with expert introduced corrections.
 
 A number of existing frameworks for annotation, such as XXX, offer a possibility to build on top of them and adjust to the project aims.
 
-Related work: various tools in Merlin, exmaralda,
-Johannes Gräen (multilingual parallel corpus, initial project on Europarl),
-BRAT (label tokens and draw dependency trees) (http://brat.nlplab.org/index.html) / opensource framework BRAT (Stenetorp et al., 2012)- annotation schemes can be defined for various purposes, including essay marking (Cf. Kutuzov & Kuzmenko, 2015), ,
-webanno (a layer on top of BRAT),
-annotateit.org, diigo.com,
-Sacodeyl (http://www.um.es/sacodeyl/en/pages/software.htm);
+%Related work: various tools in Merlin, exmaralda, Johannes Gräen (multilingual parallel corpus, initial project on Europarl), BRAT (label tokens and draw dependency trees) (http://brat.nlplab.org/index.html) / opensource framework BRAT (Stenetorp et al., 2012)- annotation schemes can be defined for various purposes, including essay marking (Cf. Kutuzov & Kuzmenko, 2015), , webanno (a layer on top of BRAT), annotateit.org, diigo.com,Sacodeyl (http://www.um.es/sacodeyl/en/pages/software.htm);
 
- 
- 
- (for an overview of error annotation schemes and their implementation, see Lüdeling and Hirschmann, 2015,
-...
+% (for an overview of error annotation schemes and their implementation, see Lüdeling and Hirschmann, 2015,
 
 Annotation of norm deviations in second-language learner texts (traditionally
 called error annotation) is typically done with a purpose-built editing tool,
@@ -441,14 +433,7 @@ proceedings automatically assigns the above-mentioned copyright to ELRA.
 
 \section{Acknowledgements}
 
-This work has been supported by an infrastructure grant from the Swedish Riksbankens Jubileumsfond (SweLL - research infrastructure for Swedish as a second language, project IN16-0464:1).
-
-Felix Hultin \cite{correctAnnotator}
-
-Robert Östling
-
-Comments and feedback on the annotation tool from
-Markus Forsberg, Lars Borin and Beata Megyesi
+This work has been supported by an infrastructure grant from Riksbankens Jubileumsfond (SweLL -- Research Infrastructure for Swedish as a Second Language, project IN16-0464:1). The design of the tool owes much to an earlier pilot developed by Felix Hultin \cite{correctAnnotator}, supervised by Robert Östling and Mats Wirén. We have received valuable comments and feedback on the tool from Markus Forsberg, Lars Borin and Beáta Megyesi.
 
 \begin{comment}
 \section{Providing References}
