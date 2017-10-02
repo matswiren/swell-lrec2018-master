@@ -26,6 +26,8 @@
 
 \newcommand{\elena}[1]{{\color{BrickRed}{Elena: #1}}}
 
+\newcommand{\mats}[1]{{\color{Blue}{Mats: #1}}}
+
 \title{Towards Transformation-based Annotation of Norm Deviations \\ in an Infrastructure for Research on Swedish as a Second Language}
 
 %\title{Transformation-based Annotation of Norm Deviations \\ in an Infrastructure for Research on Swedish as a Second Language}
@@ -37,95 +39,119 @@
 \address{\textsuperscript{1}Språkbanken, University of Gothenburg, \textsuperscript{2}Stockholm University \\
          \textsuperscript{1}Box 200, 40530 Göteborg, \textsuperscript{2}SE-10691 Stockholm \\
          dan.rosen@svenska.gu.se, mats.wiren@ling.su.se, elena.volodina@svenska.gu.se\\
-%         \{author1, author5, author9\}@abc.org\\
          }
 
 \abstract{
-This paper describes ongoing work on a system for annotation of norm deviations (errors) in second-language learner texts, a key component in an intended infrastructure for research on Swedish as a second language. Unlike traditional approaches which treat this as a single task applied to a static learner text, our approach is divided into two steps to reflect the conceptual structure of the problem: a) normalisation  of the learner text by transforming (editing) it to reflect the target hypotheses, and b) the actual norm-deviation annotation, supported by visualisation of the differences between source and normalisation. Another distinct feature of our approach is that a parallel text is generated in the transformation step, with word alignments inferred from the editing operations. This parallel text is a useful resource in its own right, by allowing for search in either or both of the source and normalised texts, and for training of systems for automated annotation of norm deviations. We describe the existing system for normalisation and outline the associated system for annotation of norm deviations currently being implemented, as well as the overall intended workflow. %[185 words out of 200 allowed]
+This paper describes ongoing work on the {\sc NormAnn} system for annotation of norm deviations (errors) in second-language learner texts, a key component in an intended infrastructure for research on Swedish as a second language. Unlike traditional approaches which treat this as a single task applied to a static learner text, our approach is divided into two steps to reflect the conceptual structure of the problem: a) normalisation  of the learner text by transforming (editing) it to reflect the target hypotheses, and b) the actual norm-deviation annotation, supported by visualisation of the differences between source and normalisation. Another distinct feature of our approach is that a parallel text is generated in the transformation step, with word alignments inferred from the editing operations. This parallel text is a useful resource in its own right, by allowing for search in either or both of the source and normalised texts, and for training of systems for automated annotation of norm deviations. We describe the normalisation component of {\sc NormAnn} and outline the associated component for annotation of norm deviations currently being implemented. %, as well as the overall intended workflow. %[181 words out of 200 allowed]
 }
 
 \begin{document}
 
 \maketitleabstract
 
-\section{Background and Introduction}
+\section{Introduction}
 
-This work is carried out within the SweLL project, whose goal is to construct an electronic research infrastructure for Swedish as a second language. We take an electronic research infrastructure to consist of the following components: \elena{maybe we can shorten this list?}
-\begin{enumerate}
-\item freely accessible data in electronic format;
-\item a set of tools for data collection and processing, including 
-analysis of proficiency levels, norm-deviation (error) annotation, and linguistic annotation;
-\item a technical platform for exploring the data with tools for data analysis and visualization;
-\item expertise within the relevant areas.
-\end{enumerate}
+%\mats{Jag kommenterade bort ganska mycket text i sektion 1 och före detta 2 (som var Related work) för att hålla oss inom given plats. Elena, säg till om du vill göra annorlunda. Nuvarande sektion 1 behöver fortfarande ses över; jag lämnar den så här fredag kväll, säg till om du vill att jag ska fixa till den i helgen. }
 
-The need for data is omnipresent within language technology projects, not the least when it comes to data produced by second language (L2) learners. Not only is the L2 data sensitive in nature and requires (agreements for use of) associated socio-demographic information, but it also demonstrates significant deviations from the norms that standard tools for natural-language processing (NLP) are tailored for. Preparation of L2 data for NLP experiments as well as for effective Second Language Acquisition (SLA) research analysis is therefore very demanding, and annotation of norm deviations (i.e. errors) is arguably the most time-consuming step.
+%\elena{Right now if we take away all "named" comments and merge Conclusions with Discussion, we will already have 4 pages. I will have a fresh look at this later - do not promise I will have a chance during the weekend, though.}
 
-We focus here on the tool for annotation of norm deviations in learner texts as one of the necessary components of the SweLL infrastructure. We introduce the term \textit{norm deviation} in an attempt to step away from the term "error" which is predominantly critical towards learner interlanguage \cite{Selinker1972}, i.e. the developing language system learners create in their minds on the way towards the target language. Connected to this, we use the term \textit{normalization}, that in this context is understood as modification of a learner text to reflect the norms of the target language. 
+%This work is carried out within the SweLL project, whose goal is to construct an electronic research infrastructure for Swedish as a second language. We take an electronic research infrastructure to consist of the following components:
 
-In this paper we develop the idea of \textit{transformation-based normalization} of learner texts as a primary step in annotation of norm deviations. The origins of the term go to a predecessing pilot within SweLL project \cite{correctAnnotator}, where the idea of logging user actions while editing learner essays was suggested, which in turn has been inspired by the Arabic tool QAWI \cite{QAWI}. We argue that this method is user-friendly and is effective in optimizing manual annotation process through prompting the annotation of norm deviations by comparing original and normalized versions of the same text.
+%\\[10pt]
 
-The rest of the paper is structured as follows: in the next section we set the development of our tool into the context of other available tools for annotation of norm deviations. Motivation behind  transformation-based approach to text normalization is provided in section \ref{sec:targethypothesis} The design of the tool (its prototype) is described in section \ref{sec:norm_tool}, followed by the principles for annotation of norm deviations in section \ref{sec:ann_tool} We conclude the paper with discussion and conclusions.
+%-- freely accessible data in electronic format;
 
-\section{Related work}
-\label{sec:relatedwork}
+%-- a set of tools for data collection and processing, including
+%analysis of proficiency levels, norm-deviation (error) annotation, and linguistic annotation;
 
-(Manual) annotation of data for various Language Technology and Digital Humanities projects is a recurring task, which has resulted in a huge number of tools that support annotation of data. Some of the tools are tailored to a particular project need (REFs), others are more generic (REFs). Some drawbacks of generic annotators, e.g. WebAnno (REF) or BRAT (REF) consist in their 
-...tricky annotation process; annotations are not structurable and not recyclable; no annotation statistics; no options to perform searches on annotations themselves
+%-- a technical platform for exploring the data with tools for data analysis and visualization;
 
-Reusing project-specific tools for other - similar - projects may entail problems with data formats and lacking (bidirectional) interoperability between the tools, undermining effectiveness of their use \elena{, as for example, was the case in MERLIN project with reuse of PAULA, Exmaralda, and FALKO excel plugin\footnote{Information obtained through personal communication with Merlin collaborators and access to their analysis of the used technology, documented in the "Black Book"} (REFS; REFS; REFS)}. 
+%--  expertise within the relevant areas.
+%\\
+% \begin{enumerate}
+% \item freely accessible data in electronic format;
+% \item a set of tools for data collection and processing, including analysis of proficiency levels, norm-deviation (error) annotation, and linguistic annotation;
+% \item a technical platform for exploring the data with tools for data analysis and visualization;
+% \item expertise within the relevant areas.
+% \end{enumerate}
 
-On the other hand, tools developed for seemingly unrelated areas, for example for annotation parallel corpora (e.g. REF), can provide a number of solutions and insights - especially, if L2 corpora are viewed as two parallel versions: original one, that is, written by the learner, and normalized one, that is, a version of the same text with expert introduced corrections.
+The need for data is omnipresent in language-technology projects, not the least when it comes to data produced by second-language learners. 
+% Not only is the L2 data sensitive in nature and requires (agreements for use of) associated socio-demographic information, but it 
+Automatic analysis of learner data is very challenging, however, since part-of-speech taggers and syntactic parsers are almost always trained on the standard language. Annotation of norm deviations (that is, errors) is therefore predominantly a manual process. Like all manual annotation, it is very time-consuming, but the problem is made worse by the fact that this kind of annotation involves interpretation of what the deviation is and of what the correct form would then be.\footnote{We use the term {\em norm deviation} rather than "error" as a neutral term with respect to the idiosyncrasies of the interlanguage of the learner \cite{Selinker1972}. Similarly, we refer to the changes imposed on a learner text to reflect the norms of the target language as {\em normalisation}. }
 
-A number of existing frameworks for annotation, such as XXX, offer a possibility to build on top of them and adjust to the project aims.
+This paper describes a tool, {\sc NormAnn}, which aims at a more efficient handling of normalisation and annotation of norm deviations, thereby alleviating some of the data bootleneck. The work is carried out in the context of a project for constructing an infrastructure for research on Swedish as a second language (SweLL\footnote{%Research Infrastructure for Swedish as a Second Language,
+{\tt https://spraakbanken.gu.se/eng/swell\_infra}}), in which {\sc Norm\-Ann} will constitute a key component.
+
+%In this paper we develop the idea of \textit{transformation-based normalization} of learner texts as a primary step in annotation of norm deviations. 
+%The origins of the term go to a predecessing pilot within SweLL project \cite{correctAnnotator}, where the idea of logging user actions while editing learner essays was suggested, which in turn has been inspired by the Arabic tool QAWI \cite{QAWI}. We argue that this method is user-friendly and is effective in optimizing manual annotation process through prompting the annotation of norm deviations by comparing original and normalized versions of the same text.
+
+%The rest of the paper is structured as follows: in the next section we set the development of our tool into the context of other available tools for annotation of norm deviations. Motivation behind  transformation-based approach to text normalization is provided in section \ref{sec:targethypothesis} The design of the tool (its prototype) is described in section \ref{sec:norm_tool}, followed by the principles for annotation of norm deviations in section \ref{sec:ann_tool} We conclude the paper with discussion and conclusions.
+
+%\section{Related work}
+%\label{sec:relatedwork}
+
+%(Manual) annotation of data for various Language Technology and Digital Humanities projects is a recurring task, which has resulted in a huge number of tools that support annotation of data. Some of the tools are tailored to a particular project need (REFs), others are more generic (REFs). Some drawbacks of generic annotators, e.g. WebAnno (REF) or BRAT (REF) consist in their 
+%...tricky annotation process; annotations are not structurable and not recyclable; no annotation statistics; no options to perform searches on annotations themselves
+
+%Reusing project-specific tools for other - similar - projects may entail problems with data formats and lacking (bidirectional) interoperability between the tools, undermining effectiveness of their use \elena{, as for example, was the case in MERLIN project with reuse of PAULA, Exmaralda, and FALKO excel plugin\footnote{Information obtained through personal communication with Merlin collaborators and access to their analysis of the used technology, documented in the "Black Book"} (REFS; REFS; REFS)}. 
+
+%On the other hand, tools developed for seemingly unrelated areas, for example for annotation parallel corpora (e.g. REF), can provide a number of solutions and insights - especially, if L2 corpora are viewed as two parallel versions: original one, that is, written by the learner, and normalized one, that is, a version of the same text with expert introduced corrections.
+
+% (save for later) A number of existing frameworks for annotation, such as XXX, offer a possibility to build on top of them and adjust to the project aims.
 
 %Related work: various tools in Merlin, exmaralda, Johannes Gräen (multilingual parallel corpus, initial project on Europarl), BRAT (label tokens and draw dependency trees) (http://brat.nlplab.org/index.html) / opensource framework BRAT (Stenetorp et al., 2012)- annotation schemes can be defined for various purposes, including essay marking (Cf. Kutuzov & Kuzmenko, 2015), , webanno (a layer on top of BRAT), annotateit.org, diigo.com,Sacodeyl (http://www.um.es/sacodeyl/en/pages/software.htm);
 
 % (for an overview of error annotation schemes and their implementation, see Lüdeling and Hirschmann, 2015,
 
-Annotation of norm deviations in second-language learner texts (traditionally
-called error annotation) is typically done with a purpose-built editing tool,
-using a hierarchical set of error categories (Granger 2009). For example,
-in ASK (Tenfjord et al. 2006), the editor used is the XML editor Oxygen,
+Annotation of norm deviations in second-language learner texts is typically done with a purpose-built editing tool, using a hierarchical set of error categories (Granger 2009). For example, in ASK (Tenfjord et al. 2006), the editor used is the XML editor Oxygen,
 % I don't think we need to refer to this editor?
 % \footnote{\url{https://www.oxygenxml.com}},
 customised with pop-up menus that reflect the chosen set of error
 categories. Specifically, annotation of an error involves inserting an XML
 {\em sic} tag with a {\em type} attribute encoding the error category, a {\em
 desc} attribute endoding the error subcategory, and a {\em corr} attribute
-encoding the correct (normalised) form of the token or tokens.
-While editing the XML file it is translated to a presentation format in HTML
-which can be viewed in a web browser, thereby facilitating proofreading of
-the annotation.
+encoding the correct (normalised) form of the token or tokens. By running a set of XSLT scripts, the XML file can be translated to an HTML format which can be viewed in a web browser, thereby facilitating proofreading of the annotation.
 
-The basic problem with this kind of approach is that it conflates the conceptually separate stages of (traditionally speaking) error coding, namely, error detection, correction and annotation (Corder 1974, Ellis 1994, Granger 2009, page 266). This is because correction (normalisation, based on a target hypothesis) is carried out as a subtask of error annotation instead of as an independent task, prior to and separate from error annotation. Also, since normalisations are only a by-product of error annotations, the corrected text as a whole is not readily available for inspection after each annotation step, and it may therefore be more cumbersome to produce a consistent normalisation.
+The basic problem with this kind of approach is that it conflates the conceptually separate stages of (traditionally speaking) error coding, namely, error detection, correction and annotation (Corder 1974, Ellis 1994, Granger 2009, page 266). This is because correction (normalisation, based on a target hypothesis) is carried out as a subtask of error annotation instead of as an independent task, prior to and separate from error annotation. Also, since normalisations are only a by-product of error annotations, the corrected text as a whole is not readily available for inspection after each annotation step, and as a result it may be more difficult to produce a consistent normalisation.
 
 In Falko \cite{ludeling05multi-levelerror} and MERLIN  \cite{MERLIN2014},
 target hypothesis corrections have a more independent status in the sense that they are entered in a separate step prior to error annotation, but the normalised text still does not seem to be available in its entirety.
 
-To circumvent these problems, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some criteria, and annotating the norm deviations corresponding to the changes.
-
-
-
-A bit about traditional tools like   (BRAT, etc..)
+To circumvent these problems, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some given criteria, and annotating the norm deviations corresponding to the changes. Furthermore, as a result of this process, a parallel corpus consisting of the learner source text and the normalised text is incrementally constructed.
 
 \section{Target Hypotheses and Editing}
 \label{sec:targethypothesis}
 
-\dan{Highlight that the produced resource is actually a parallel corpus?}
+%\dan{Highlight that the produced resource is actually a parallel corpus?} \elena{Yes!}
 
-Normalisation involves, for each deviation from the norm, to decide on a target hypothesis and to edit the text to mirror this hypothesis. We allow edit operations of characters and tokens, involving insertions, deletions, substitutions % \textcolor{red}{EV:("substitution" instead of "replacement"?; merge? split? - separate actions or as variants of replacement, insertion and deletion?)} and move \textcolor{red}{EV:(Is it a term?)}
-or moves (see Section~\ref{sec:norm_tool}). By keeping track of the sequence of edit operations, an additional advantage could be gained, namely, that a preliminary error annotation can be automatically inferred (see Section~\ref{sec:ann_tool}). This is something that we plan to explore later on in the project.
+%Text normalisation as a term means transforming original text to some standard form, where standards can be defined differently according to the task at hand, e.g. for tranfsorming written text into speech \cite{sproat2016rnn}. Target hypotheses (TH) in L2 context are interpretations of the learner text (ORIG), e.g.:
+%\begin{center}
+%\textsc{ORIG: My mother have help us.}
+
+%\textsc{TH1: My mother can help us.}
+
+%\textsc{TH2: My mother has helped us.}
+%\end{center}
+ %\mats{Jag tror att vi här vill ha ett exempel där TH1 och TH2 är lika troliga, men här uppfattar jag att TH2 är troligare? Ett sådant exempel fanns i fotnot 2 -- jag flyttade hit det i stället.}
+
+As pointed out above, annotation of a norm deviation always involves an interpretation of what the deviation is -- the target hypothesis, here realised by editing of the text. A complication is that there may be multiple competing target hypotheses for a deviation. An example of this from \newcite[Section 2.1]{ludeling05multi-levelerror} is "die Erklärung für diese Phänomen ist einfach", where "diese Ph{\"a}nomen" in absence of other information could equally likely be interpreted as a gender error (with the target hypothesis "dieses Ph{\"a}nomen") or as a number error (with the target hypothesis "diese Ph{\"a}nomene"). Although {\sc NormAnn} only handles one target hypothesis, in principle we could deal with multiple hypotheses by maintaining different normalisations for a given part of the source text.
+
+Furthermore, some systems allow for several levels of target hypotheses. In the Czech learner corpus of \newcite{Hana2012} a
+first level normalises grammatical forms without context information. All other deviations (e.g.\ word order) belong to a second level and take the whole sentence into consideration.
+In MERLIN \cite{MERLIN2014} two levels are used: a) minimal corrections pertaining only to orthographic and grammatical errors and b) corrections to handle sociolinguistic, lexical and pragmatic deviations to arrive at what is referred to as an acceptable text. Again, {\sc NormAnn} does not handle this, but it would be possible to do so by maintaining several levels of aligned normalisations. The first level (with basic corrections) would then be aligned to the source text, and the second level (with additional corrections) would be aligned to the first level.
+
+We allow editing operations of characters and tokens, involving insertions, deletions, substitutions % \textcolor{red}{EV:("substitution" instead of "replacement"?; merge? split? - separate actions or as variants of replacement, insertion and deletion?)} and move \textcolor{red}{EV:(Is it a term?)}
+or moves (see Section~\ref{sec:norm_tool}), all along creating a parallel version of the original text. By keeping track of the sequence of edit operations, an additional advantage could be gained, namely, that a preliminary error annotation can be automatically inferred (see Section~\ref{sec:ann_tool}). %This is something that we plan to explore later on in the project.
 
 It might be argued that insertions, deletions and
-replacements could be calculated automatically from the differences between the source and normalised texts without logging the edit operations, but moves of tokens (which we need in order to keep track of word-order changes) result in added complexity \cite{ShapiraStorer2007} and ambiguities, which is why we log the editing operations.
+replacements could be computed automatically from the differences between the source and normalised texts, but moves of tokens (which we need in order to keep track of word-order changes) result in added complexity \cite{ShapiraStorer2007} and ambiguities, which is why we log the editing operations.
 
 \begin{figure*}
 \includegraphics[width=\textwidth, trim={0 1cm 0 0}, clip]{screenshot.pdf}
 \emph{\small I live in an apartment. I have lived there for one year. I would like to have a big house.}
 \caption{Screenshot of an editing session in progress. The three panes in the upper row are from left to right:
 1) the source text which cannot be edited,
-2) the target hypothesis which is where the annotator do all their edits,
+2) the target hypothesis which is where the annotators do all their edits,
 3) a calculated view of the differences between the two texts obtained from the history of edits.
 Below the panes we display the the differences pictorially:
 the source text on top and the target hypothesis below, with edges
@@ -139,20 +165,15 @@ so it doesn't look like {\em stor} and {\em hus} are connected etc}
 }
 \end{figure*}
 
-Some systems allow for multiple (vertical) levels of target hypotheses. In the Czech learner corpus of \newcite{Hana2012} a
-first level normalises grammatical forms without context information. All other deviations (e.g.\ word order) belong to a second level and take the whole sentence into consideration.
-In MERLIN \cite{MERLIN2014} two levels are used: a) minimal corrections pertaining only to orthographic and grammatical errors and b) corrections to handle sociolinguistic, lexical and pragmatic deviations to arrive at what is referred to as an acceptable text. This could be handled in our approach by maintaining several levels of aligned normalisations. The first level (with basic corrections) would then be aligned to the source text, and the second level (with additional corrections) would be aligned to the first level. Adding several levels is something that we have not undertaken yet, however.
-
-We also do not handle multiple {\em competing} target hypotheses for the same source material in the manner of L{\"u}deling et al. (2005, Section 2.1).\footnote{An example of this from L{\"u}deling et al. (2005) is "diese Ph{\"a}nomen" which could be interpreted either as a gender error (with the target hypothesis "dieses Ph{\"a}nomen") or as a number error (with the target hypothesis "diese Ph{\"a}nomene").} In principle, this could be dealt with in our approach by maintaining different normalisations on the same level for a given part of the source text.
+%We also do not handle multiple {\em competing} target hypotheses for the same source material in the manner of \newcite[Section 2.1]{ludeling05multi-levelerror}.\footnote{An example of this from \newcite[Section 2.1]{ludeling05multi-levelerror} is "die Erklärung für diese Phänomen ist einfach", where "diese Ph{\"a}nomen" in absence of other information could equally likely be interpreted as a gender error (with the target hypothesis "dieses Ph{\"a}nomen") or as a number error (with the target hypothesis "diese Ph{\"a}nomene").} In principle, this could be dealt with in our approach by maintaining different normalisations on the same level for a given part of the source text.
 
 \section{Design of our normalisation tool}
 \label{sec:norm_tool}
-\dan{Should we name the tool?}
+\dan{Should we name the tool?} \elena{That would be great. Any ideas? SweLL-norm?} \mats{NormAnn} \elena{I like NormAnn - refers both to normalization and to annotation}
 
-We set off to build a normalisation tool to be both simple and expressive.
-We wanted it to have the feel of a conventional text editor and yet retain
-information about how a word was normalised or where it was moved to.
-\dan{Comment that we did not find any tool fulfilling our wishes/requirements?}
+We wanted our tool to have the feel of a conventional text editor and yet retain
+information about how a word was normalised or where it was moved to. None of the existing tools corresponded to our expectations, hense we set off to build our own normalisation tool. We wanted it to be both simple and expressive.
+%\dan{Comment that we did not find any tool fulfilling our wishes/requirements?}
 
 To facilitate normalisation and to support reliability and consistency,
 we use four panes (see Figure~\ref{fig:screenshot}): one containing the
@@ -330,8 +351,8 @@ and keep this in sync with the CodeMirror editor as described in this section.
 The normalisation editor may also be used as a library and can in this way
 be included in other tools and webpages.
 \dan{Should we link to a demo version of the editor? Do LREC reviewers care
-about running tools? It would be a good complement nevertheless.}
-\dan{MIT License? This is what I have been supposing since it is the standard at SB}
+about running tools? It would be a good complement nevertheless.} \elena{You could add the link in a footnote, I think it is always a good coplement. But you will have to test it in different browsers - e.g. in Internet Explorer it may fail}
+\dan{MIT License? This is what I have been supposing since it is the standard at SB} \elena{Seems reasonable. I don't mind.} \mats{Agree on both points.}
 
 % We only use immutable data
 % structures for ease of implementation,  which could be an efficiency problem:
@@ -346,8 +367,8 @@ about running tools? It would be a good complement nevertheless.}
 \section{Annotation of Norm Deviations}
 \label{sec:ann_tool}
 
-We support annotating the edits from the normalisation with a taxonomy
-of norm deviations.  The norm deviation annotations are put on the links:
+The taxonomy of norm deviations used in the SweLL project is largely based on that of the ASK corpus \cite{tenfjord2006ask}, so as to take advantage of the experiences from the closely related language target there (Norwegian). The modifications of that taxonomy so far are limited to adding categories for morphological deviations. 
+The norm-deviation annotations are put on the links: \mats{Clarify if this is about what is added graphically by the annotator or if it is about the representation, or both.}
 on the entire connected component, like so \dan{in ascii art for now}:
 
 \begin{verbatim}
@@ -364,28 +385,19 @@ component in the graph.
 it can be lifted to allow labelling individual edges or tokens.}
 
 By putting the labels on components of edges
-(rather than the alternative to put them on the source tokens)
-gives the advantage that any part of the interface
-can be used to annotate the norm deviations:
-the user may click words in the source text and choose
-a norm deviation label from a menu. Or, they can click
-on the graph directly. Or in any of the other two panes,
+(rather than the alternative to put them on the source tokens) gives the advantage that any part of the interface can be used to annotate the norm deviations:
+the user may click words in the source text and choose a norm deviation label from a menu. Or, they can click on the graph directly. Or in any of the other two panes,
 since they are all connected via the links.
-Further, insertions (due to missing words) do not correspond to any token
-in the source text so it would not work to only put labels on the
-source text.
+Further, insertions (due to missing words) do not correspond to any token in the source text so it would not work to only put labels on the source text.
 
-The norm deviation annotation can be done after normalising the text,
-but we can go back and forth between the modes if the annotator want to
-improve the normalisation.
+The norm deviation annotation can be done after normalising the text, but we can go back and forth between the modes if the annotator want to improve the normalisation.
 
 A preliminary error annotation can be automatically inferred. This is
 something that we plan to explore later on in the project.
 Many deviation labels will be easy to infer even without any linguistic
 insight, in particular: missing word, redundant word, word order, but also:
 overcompounding, oversplitting.
-Automatic label suggestion can be done independently of the rest of the user interface,
-like a plugin, and adding more heuristics as the project continues.
+Automatic label suggestion can be done independently of the rest of the user interface, like a plugin, and adding more heuristics as the project continues.
 For example, in a suffixing language like Swedish we could have heuristics
 that detect if tense or determinancy has been transformed, and give
 suggestions automatically for relevant labels.
@@ -394,46 +406,37 @@ For ergonomics, when using the tool for several hours a day,
 we also provide keyboard bindings for labelling and navigating between
 the linked components.
 
-Note to reviewers: this is the scheduled to be completed in a few weeks
-will be completed well before the camera-ready version.
+Note to reviewers: it is scheduled to be completed in a few weeks well before the camera-ready version.
 
-Note that we can use the same system for anonymizing the text
-by setting a special anonymization label. We (hope) that we can
-then release a anonymized version of the corpus stripped out
-of source tokens connected to such an anonymisation label.
+Note that we can use the same system for anonymizing the text by setting a special anonymization label. We (hope) that we can
+then release an anonymized version of the corpus stripped out of source tokens connected to such an anonymisation label.
 
-Elena: Also something about about our intended error categories? Yes, I will add a bit on this
+\elena{Also something about about our intended error categories? Yes, I will add a bit on this}
 
 \section{Discussion}
 \label{sec:discussion}
 
-Summarise overall workflow\ldots ?
+% Summarise overall workflow\ldots ?
+% \elena{Merge together Disussion and Conclusions for now?}
 
-We believe that the following properties of our approach will contribute to more reliable normalisation, less time-consuming annotation and production of more valuable corpus resources compared to traditional methods (can we substantiate any of this?):
+Although only the normalisation component of {\sc NormAnn} has been finsished so far, we have good reason to believe that transformation-based annotation of norm deviations will increase the efficiency and consistency of this process.
+%have described To circumvent these problems, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some given criteria, and annotating the norm deviations corresponding to the changes. Furthermore, as a result of this process, a parallel corpus consisting of the learner source text and the normalised text is incrementally constructed.
+%We believe that the following properties of our approach will contribute to more reliable normalisation, less time-consuming annotation and production of more valuable corpus resources compared to traditional methods (can we substantiate any of this?):
+First, the conceptually different tasks of deciding on a target hypotheses (with resulting normalisations) and annotating norm deviations are separated. Also, since the source text and normalised text are displayed in separate panes, with the normalised text being incrementally updated, the annotator has access to all the relevant information for familiarising themselves with the specific interlanguage of the learner, and thus to make consistent decisions on target hypotheses. In addition, the process could be made more efficient by inferring a preliminary error annotation from the editing operations. An additional advantage is that a parallel text is incrementally constructed based on the editing operations, thereby allowing for search in either or both of the source and normalised texts, and training of systems for automated annotation of norm deviations \cite{sproat2016rnn}. We expect our approach to be useful also for other kinds of problems which involve parallel texts and manual annotation, such as text simplification, standardisation of short message texts, essay-grading by teachers and linguistic typology. % or peer-reviewers.
 
-First, the conceptually different tasks of deciding on a target hypotheses (with resulting normalisations) and annotating norm deviations are separated. Also, since the source text and normalised text are displayed in separate panes, with the normalised text being incrementally updated, the annotator is provided with excellent facilities for getting to know the specific inter-language of the learner, and to make consistent decisions on target hypotheses. In addition, the editing operations could be used for inferring a preliminary error annotation, though this is a path that we have not yet explored. Furthermore, a parallel text is automatically constructed based on the editing operations, which provides a resource valuable for independent purposes, such as training of a system for automated normalisation.
+%We anticipate that our approach could also be useful for other problems which are based on parallel texts and systematic differences between them are vital for developing automated tools for the purpose, e.g. text simplification, standardizing short message texts, or essay-grading by teachers or peer-reviewers. % for personal or online (collaborative ?) feedback (teachers/peer reviewers suggesting better rewriting of a learner's text (e.g. Lo, Wang and Yeh (2008) and Yeh and Lo (2009) for their Online Annotator for EFL Writing say   “that online annotation functionalities for manipulating, rearranging, search, displaying and sharing annotations can be used to support EFL error correction and corrective feedback, especially the collaboration between teachers and students outside the classroom” (p. 883))...
 
-The user experience will be improved by allowing the annotator to connect
-and disconnect links directly in the ladder diagram. This should also be
-possible by using keyboard shortcuts in the editor.  Frequent operations
-such as transposing words can also get dedicated keyboard bindings.
+\mats{Det här passar kanske bättre i föregående sektion, Dan?} We plan to improve the user experience by allowing the annotator to connect and disconnect links directly in the ladder diagram. This should also be possible by using keyboard shortcuts in the editor. Frequent operations such as transposing words can also get dedicated keyboard bindings.
 
-...
+%\section{Conclusion}
+%\label{sec:conclusions}
 
-The approach in general can be applied to other scenarios, where parallel versions and (documented?) differences between them are vital for developing automated tool for the purpose, e.g. text simplification, standardizing short message texts, essay-grading by teachers for personal or online (collaborative ?) feedback (teachers/peer reviewers suggesting better rewriting of a learner's text (e.g. Lo, Wang and Yeh (2008) and Yeh and Lo (2009) for their Online Annotator for EFL Writing say   “that online annotation functionalities for manipulating, rearranging, search, displaying and sharing annotations can be used to support EFL error correction and corrective feedback, especially the collaboration between teachers and students outside the classroom” (p. 883))...
-
-...
-
-
-\section{Conclusion}
-\label{sec:conclusions}
-
-Your submission of a finalised contribution for inclusion in the LREC
-proceedings automatically assigns the above-mentioned copyright to ELRA.
+%Your submission of a finalised contribution for inclusion in the LREC
+%proceedings automatically assigns the above-mentioned copyright to ELRA.
 
 \section{Acknowledgements}
 
-This work has been supported by an infrastructure grant from Riksbankens Jubileumsfond (SweLL -- Research Infrastructure for Swedish as a Second Language, project IN16-0464:1). The design of the tool owes much to an earlier pilot developed by Felix Hultin \cite{correctAnnotator}, supervised by Robert Östling and Mats Wirén. We have received valuable comments and feedback on the tool from Markus Forsberg, Lars Borin and Beáta Megyesi.
+This work has been supported by an infrastructure grant from Riksbankens Jubileumsfond (SweLL -- Research Infrastructure for Swedish as a Second Language, project IN16-0464:1). The ideas advanced here owe much to an earlier pilot developed by Felix Hultin \cite{correctAnnotator}, supervised by Robert Östling and Mats Wirén. We have received valuable comments and feedback on the tool from Markus Forsberg, Lars Borin and Beáta Megyesi.
 
 \begin{comment}
 \section{Providing References}
