@@ -145,7 +145,7 @@ It might be argued that insertions, deletions and
 replacements could be computed automatically from the differences between the source and normalised texts, but moves of tokens (which we need in order to keep track of word-order changes) result in added complexity \cite{ShapiraStorer2007} and ambiguities, which is why we log the editing operations.
 
 \begin{figure*}
-\includegraphics[width=\textwidth, trim={0 1cm 0 0}, clip]{screenshot.pdf}
+\includegraphics[width=\textwidth, trim={0 0.6cm 0 0}, clip]{screenshot.pdf}
 \emph{\small I live in an apartment. I have lived there for one year. I would like to have a big house.}
 \caption{Screenshot of an editing session in progress. The three panes in the upper row are from left to right:
 1) the source text which cannot be edited,
@@ -154,8 +154,6 @@ replacements could be computed automatically from the differences between the so
 Below the panes we display the the differences pictorially:
 the source text on top and the target hypothesis below, with edges
 showing how words have been moved.
-\dan{todo on Monday: experiment with other graphical layouts of the edges
-so it doesn't look like {\em stor} and {\em hus} are connected etc}
 % Deletions are shown in \textcolor{red}{red} with \sout{overstrike},
 % insertions in \textcolor{green}{green} with \underline{underline}.
 % (If the text is too long only the current sentence is shown.)
@@ -289,7 +287,8 @@ not link both of these to the original \verb!stan!,
 but instead break off \verb!på!.
 However, if this is not the analysis the user wants the links to represent,
 they undo this automatic behaviour by pressing {\it Ctrl-Z},
-yielding this\footnote{\dan{Not yet in the interface, but the fix is minuscule.}}:
+yielding this:
+% \dan{Not yet in the interface, but the fix is minuscule.}
 
 \begin{verbatim}
 II)
@@ -370,9 +369,23 @@ and can be tried online\footnote{\url{https://demo.spraakdata.gu.se/dan/swell-ed
 \section{Annotation of Norm Deviations}
 \label{sec:ann_tool}
 
-The taxonomy of norm deviations used in the SweLL project is largely based on that of the ASK corpus \cite{tenfjord2006ask}, so as to take advantage of the experiences from the closely related language target there (Norwegian). The modifications of that taxonomy so far are limited to adding categories for morphological deviations.
-The norm-deviation annotations are put on the links: \mats{Clarify if this is about what is added graphically by the annotator or if it is about the representation, or both.}
+% \elena{Also something about about our intended error categories? Yes, I will add a bit on this}
+
+The taxonomy of norm deviations used in the SweLL project is largely based
+on that of the Norwegian learner corpus ASK \cite{tenfjord2006ask},
+so as to take advantage of the experiences from the closely related language
+target there.
+The modifications of that taxonomy so far are limited to adding categories
+for morphological deviations.
+
+\mats{Clarify if this is about what is added graphically
+by the annotator or if it is about the representation, or both.}
+
+The norm-deviation annotations are put on the links
 on the entire connected component, like so \dan{in ascii art for now}:
+\footnote{Note to reviewers: labelling components is not yet in the interface
+but is scheduled to be completed in a few weeks, well before the camera-ready
+version.}
 
 \begin{verbatim}
 person nummer
@@ -396,15 +409,6 @@ Further, insertions (due to missing words) do not correspond to any token in the
 The norm deviation annotation can be done after normalising the text, but annotators can go back and forth between the modes
 if they want to improve the normalisation.
 
-A preliminary error annotation can be automatically inferred. This is
-something that we plan to explore later on in the project.
-Many deviation labels will be easy to infer even without any linguistic
-insight, in particular: missing word, redundant word, word order, but also:
-overcompounding, oversplitting.
-Automatic label suggestion can be done independently of the rest of the user interface, like a plugin, and adding more heuristics as the project continues.
-For example, in a suffixing language like Swedish we can automatically suggest
-revelant labels when noticing changes in common suffixes for tense or definiteness.
-
 For ergonomics, when using the tool for several hours a day,
 we also provide keyboard bindings for labelling and navigating between
 the linked components.
@@ -414,13 +418,21 @@ and disconnect links directly in the ladder diagram.
 % This should also be possible by using keyboard shortcuts in the editor.
 % Frequent operations such as transposing words can also get dedicated keyboard bindings.
 
+A preliminary error annotation could automatically be inferred.
+For example, in a suffixing language like Swedish we can automatically
+suggest revelant labels when noticing changes in common suffixes for tense
+or definiteness.
+Many deviation labels are easy to infer even without any linguistic
+insight: missing or redundant words, deviant word order, overcompounding
+and oversplitting.
+This is something that we plan to explore further later on in the project.
+% More herustics for automatic label suggestion can be done independently of the rest of the
+% user interface, like a plugin, and more heuristics can be added as the
+% project continues.
 
-Note to reviewers: it is scheduled to be completed in a few weeks well before the camera-ready version.
-
-Note that we can use the same system for anonymizing the text by setting a special anonymization label. We (hope) that we can
-then release an anonymized version of the corpus stripped out of source tokens connected to such an anonymisation label.
-
-\elena{Also something about about our intended error categories? Yes, I will add a bit on this}
+Note that we can use the same system for anonymizing the text by setting a
+special anonymization label. An anonymised version of the corpus stripped
+out of source tokens connected to such an anonymisation label may be released.
 
 \section{Discussion}
 \label{sec:discussion}
