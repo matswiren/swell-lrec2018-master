@@ -111,24 +111,21 @@ This paper describes % a tool, \normAnn,
 Annotation of norm deviations in second-language learner texts is typically done with a purpose-built editing tool, using a hierarchical set of error categories \cite{Granger2008}. For example, in ASK \cite{tenfjord2006ask}, the editor used is the XML editor Oxygen, customised with pop-up menus that reflect the chosen set of error categories. Specifically, annotation of an error involves inserting an XML
 {\em sic} tag with a {\em type} attribute encoding the error category, a {\em desc} attribute endoding the error subcategory, and a {\em corr} attribute encoding the correct (normalised) form of the token or tokens. By running a set of XSLT scripts, the XML file can be translated to an HTML format which can be viewed in a web browser, thereby facilitating proofreading of the annotation.
 
-The basic problem with this kind of approach is that it conflates the conceptually separate stages of (traditionally speaking) error coding, namely: error detection, correction and annotation
+The basic problem with this kind of approach is that it conflates the conceptually separate stages of (traditionally speaking) error coding, namely, error detection, correction and annotation
 % Corder 1974
 \cite[page 266]{Ellis1994,Granger2008}. This is because correction (normalisation, based on a target hypothesis) is carried out as a subtask of error annotation instead of as an independent task, prior to and separate from error annotation. Also, since normalisations are only a by-product of error annotations, the corrected text as a whole is not readily available for inspection after each annotation step, and as a result it may be more difficult to produce a consistent normalisation.
 
 In Falko \cite{ludeling05multi-levelerror} and MERLIN \cite{MERLIN2014}, target hypothesis corrections have a more independent status in the sense that they are entered in a separate step prior to error annotation, but the normalised text still does not seem to be available in its entirety.
 
-To circumvent these problems, and to reduce subjectivity and increase interannotator agreement, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some given criteria, and annotating the norm deviations corresponding to the changes. Furthermore, as a result of this process, a parallel corpus consisting of the learner source text and the normalised text is incrementally constructed.
-\dan{State the contributions of the paper?
-Our contributions are:
+To circumvent these problems, and to reduce subjectivity and increase interannotator agreement, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some given criteria, and annotating the norm deviations corresponding to the changes. Furthermore, as a result of this process, a parallel corpus consisting of the learner source text and the normalised text is incrementally constructed. Thus, our contribution is a system for transformation-based annotation of norm deviations which includes the following two components:
+
 \begin{itemize}
-\item An editor for norm deviations that works by transforming a text and as a side product produces a
-parallell corpus (Section~\ref{sec:norm_tool})
-\item By viewing normalisation as a parallell corpus, we show that we can label using a
-norm deviation taxonomy on the aligment edges (Section~\ref{sec:ann_tool})
+\item An editor in which a learner source text can be normalised and a parallel corpus of the two texts is simultaneously generated (Sections~\ref{sec:targethypothesis} and \ref{sec:norm_tool}).
+\item Integrated with this, a facility for annotating the normalisations (changes) with norm-deviation categories. (Section~\ref{sec:ann_tool})
 \end{itemize}}
 
 
-\section{Target Hypotheses and Editing}
+\section{Target Hypotheses}
 \label{sec:targethypothesis}
 
 %\dan{Highlight that the produced resource is actually a parallel corpus?} \elena{Yes!}
@@ -148,10 +145,12 @@ As pointed out above, annotation of a norm deviation always involves an interpre
 Furthermore, some systems allow for several levels of target hypotheses. In the Czech learner corpus of \newcite{Hana2012} a first level normalises grammatical forms without context information. All other deviations (e.g.\ word order) belong to a second level and take the whole sentence into consideration.
 In MERLIN \cite{MERLIN2014} two levels are used: a) minimal corrections pertaining only to orthographic and grammatical errors and b) corrections to handle sociolinguistic, lexical and pragmatic deviations to arrive at what is referred to as an acceptable text. Again, \normAnn does not handle this, but it would be possible to do so by maintaining several levels of aligned normalisations. The first level (with basic corrections) would then be aligned to the source text, and the second level (with additional corrections) would be aligned to the first level.
 
+\mats{Dan, I think this paragraph belongs to Section 3 -- do you need anything of it there? Otherwise we should skip it.}
 We allow editing operations of characters and tokens, involving insertions, deletions, substitutions % \textcolor{red}{EV:("substitution" instead of "replacement"?; merge? split? - separate actions or as variants of replacement, insertion and deletion?)} and move \textcolor{red}{EV:(Is it a term?)}
 or moves (see Section~\ref{sec:norm_tool}), all along creating a parallel version of the original text. By keeping track of the sequence of edit operations, an additional advantage could be gained, namely, that a preliminary error annotation can be automatically inferred (see Section~\ref{sec:ann_tool}). %This is something that we plan to explore later on in the project.
-\dan{Move this overview of the paper to section 1?}
+%\dan{Move this overview of the paper to section 1?}
 
+\mats{Dan, I think this paragraph belongs to Section 3 -- do you need anything of it there? Otherwise we should skip it.}
 It might be argued that insertions, deletions and
 replacements could be computed automatically from the differences between the source and normalised texts, but moves of tokens (which we need in order to keep track of word-order changes) result in added complexity \cite{ShapiraStorer2007} and ambiguities, which is why we log the editing operations.
 
@@ -383,23 +382,15 @@ and can be tried online\footnote{\url{https://demo.spraakdata.gu.se/dan/swell-ed
 \section{Annotation of Norm Deviations}
 \label{sec:ann_tool}
 
-% \elena{Also something about about our intended error categories? Yes, I will add a bit on this}
+\mats{Dan, om du hinner så vore det kanske bra att ha rubriker på panelerna i figur 1 som man kan hänvisa till, till exempel Source text, Normalised text, Changes och Alignment of source text and normalised text}
 
-The taxonomy of norm deviations used in the SweLL project is largely based
-on that of the Norwegian learner corpus ASK \cite{tenfjord2006ask},
-so as to take advantage of the experiences from the closely related language
-target there.
-The modifications of that taxonomy so far are limited to adding categories
-for morphological deviations.
+\mats{Varför är "Jag" blått i Source text?}
 
-\mats{Clarify if this is about what is added graphically
-by the annotator or if it is about the representation, or both.}
+The norm-deviation annotation is carried out by selecting material, either one or several changed tokens that have been changed in {\tt Normalised text}, or the corresponding aligned component of source and normalisation in {\tt Alignment} (is this right???) in Figure~\ref{fig:screenshot}. The taxonomy of deviations is based on the error categories in the Norwegian learner corpus ASK \cite{tenfjord2006ask}, with 
+% to take advantage of the experiences from the closely related target language there.
+so far with a few extensions of the categories for morphological deviations. When the annotator has selected a change, they add a deviation category from a pop-up menu, and the category is then displayed on the corrsponding link in {\tt Alignment} (see Figure ???).
 
-The norm-deviation annotations are put on the links
-on the entire connected component, like so \dan{in ascii art for now}:
-\footnote{Note to reviewers: labelling components is not yet in the interface
-but is scheduled to be completed in a few weeks, well before the camera-ready
-version.}
+%\footnote{Note to reviewers: labelling components is not yet in the interface but is scheduled to be completed in a few weeks, well before the camera-ready version.}
 
 \begin{verbatim}
 person nummer
