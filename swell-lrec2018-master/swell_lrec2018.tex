@@ -46,7 +46,8 @@
 \abstract{
 This paper describes ongoing work on a tool % the \normAnn system
 for annotation of norm deviations (errors) in second-language learner texts, a key component in an intended infrastructure for research on Swedish as a second language. Unlike traditional approaches which treat this as a single task applied to a static learner text, our approach is divided into two steps to reflect the conceptual structure of the problem: a) normalisation  of the learner text by transforming (editing) it to reflect the target hypotheses, and b) the actual norm-deviation annotation, supported by visualisation of the differences between source and normalisation. Another distinct feature of our approach is that a parallel text is generated in the transformation step, with word alignments inferred from the editing operations. This parallel text is a useful resource in its own right, by allowing for search in either or both of the source and normalised texts, and for training of systems for automated annotation of norm deviations. We describe the normalisation component of \normAnn and outline the associated component for annotation of norm deviations currently being implemented. %, as well as the overall intended workflow. %[181 words out of 200 allowed]
-}
+\newline
+\Keywords{second language learner corpora, error annotation, normalisation}}}
 
 \begin{document}
 
@@ -80,7 +81,7 @@ for annotation of norm deviations (errors) in second-language learner texts, a k
 
 The need for data is omnipresent in language-technology projects, not the least when it comes to data produced by second-language learners.
 % Not only is the L2 data sensitive in nature and requires (agreements for use of) associated socio-demographic information, but it
-Automatic analysis of learner data is very challenging, however, since part-of-speech taggers and syntactic parsers are almost always trained on the standard language. Annotation of norm deviations (that is, errors) is therefore predominantly a manual process. Like all manual annotation, it is very time-consuming, but the problem is exacerbated by the high degree of subjectivity of deciding what the deviation is and of what the correct form would then be.\footnote{We use the term {\em norm deviation} rather than "error" as a neutral term with respect to the idiosyncrasies of the interlanguage of the learner \cite{Selinker1972}. Similarly, we refer to the changes imposed on a learner text to reflect the norms of the target language as {\em normalisation}. }
+Automatic analysis of learner data is very challenging, however, since part-of-speech taggers and syntactic parsers are almost always trained on the standard language. Annotation of norm deviations (that is, errors) is therefore predominantly a manual process. Like all manual annotation, it is very time-consuming, but the problem is exacerbated by the high degree of subjectivity in deciding what the deviation is and of what the correct form would then be.\footnote{We use the term {\em norm deviation} rather than "error" as a neutral term with respect to the idiosyncrasies of the interlanguage of the learner \cite{Selinker1972}. Similarly, we refer to the changes imposed on a learner text to reflect the norms of the target language as {\em normalisation}. }
 
 This paper describes % a tool, \normAnn,
 \normAnn which aims at a more efficient handling of normalisation and annotation of norm deviations, thereby alleviating some of the data bootleneck. The work is carried out in the context of a project for constructing an infrastructure for research on Swedish as a second language (SweLL\footnote{%Research Infrastructure for Swedish as a Second Language,
@@ -116,7 +117,7 @@ The basic problem with this kind of approach is that it conflates the conceptual
 
 In Falko \cite{ludeling05multi-levelerror} and MERLIN \cite{MERLIN2014}, target hypothesis corrections have a more independent status in the sense that they are entered in a separate step prior to error annotation, but the normalised text still does not seem to be available in its entirety.
 
-To circumvent these problems, and to minimise subjectivity and to increase interannotator agreement, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some given criteria, and annotating the norm deviations corresponding to the changes. Furthermore, as a result of this process, a parallel corpus consisting of the learner source text and the normalised text is incrementally constructed.
+To circumvent these problems, and to reduce subjectivity and increase interannotator agreement, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some given criteria, and annotating the norm deviations corresponding to the changes. Furthermore, as a result of this process, a parallel corpus consisting of the learner source text and the normalised text is incrementally constructed.
 
 \section{Target Hypotheses and Editing}
 \label{sec:targethypothesis}
@@ -187,7 +188,7 @@ the links between them.
 To be able to track word movement we must define what tokens are.
 For now we make the simple definition that tokens are words separated
 by whitespace and that tokens themselves cannot contain whitespace.
-Thus adding whitespace between non-whitespace characters makes a new token
+Thus adding whitespace between non-whitespace characters makes a new token.
 Conversely, removing all whitespace between two tokens merges them into one token.
 
 For expressing overcompounding and oversplitting we need links between tokens
@@ -322,7 +323,7 @@ This rearranging operation can also be executed with the mouse using drag and dr
 
 \subparagraph{Undo} We support unlimited chronological undo and redo operations.
 For convenience we also support undo at a specific position. % in the hypothesis.
-If this position is part of a compound of the entire compound is reverted. %EV: don't understand this sentence. One "of" is too much?
+If this position is part of a compound, the entire compound is reverted. 
 Tokens are rearranged into their original positions, which
 can be recovered using unmoved words as reference points.
 Undoing is very useful to get links exactly right, which occasionally takes a
@@ -420,7 +421,7 @@ Note to reviewers: it is scheduled to be completed in a few weeks well before th
 Note that we can use the same system for anonymizing the text by setting a special anonymization label. We (hope) that we can
 then release an anonymized version of the corpus stripped out of source tokens connected to such an anonymisation label.
 
-\elena{Also something about about our intended error categories? Yes, I will add a bit on this}
+%\elena{Also something about about our intended error categories? Yes, I will add a bit on this}
 
 \section{Discussion}
 \label{sec:discussion}
@@ -428,10 +429,7 @@ then release an anonymized version of the corpus stripped out of source tokens c
 % Summarise overall workflow\ldots ?
 % \elena{Merge together Disussion and Conclusions for now?}
 
-Although only the normalisation component of \normAnn has been finsished so far, we have good reason to believe that transformation-based annotation of norm deviations will increase the efficiency and consistency of this process by minimising subjectivity and increasing interannotator agreement.
-%have described To circumvent these problems, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some given criteria, and annotating the norm deviations corresponding to the changes. Furthermore, as a result of this process, a parallel corpus consisting of the learner source text and the normalised text is incrementally constructed.
-%We believe that the following properties of our approach will contribute to more reliable normalisation, less time-consuming annotation and production of more valuable corpus resources compared to traditional methods (can we substantiate any of this?):
-First, the conceptually different tasks of deciding on a target hypotheses (with resulting normalisations) and annotating norm deviations are separated. Also, since the source text and normalised text are displayed in separate panes, with the normalised text being incrementally updated, the annotator has access to all the relevant information for familiarising themselves with the specific interlanguage of the learner, and thus to make consistent decisions on target hypotheses. In addition, the process could be made more efficient by inferring a preliminary error annotation from the editing operations. An additional advantage is that a parallel text is incrementally constructed based on the editing operations, thereby allowing for search in either or both of the source and normalised texts, and training of systems for automated annotation of norm deviations \cite{sproat2016rnn}. We expect our approach to be useful also for other kinds of problems which involve parallel texts and manual annotation, such as text simplification, standardisation of short message texts, essay-grading by teachers and linguistic typology. % or peer-reviewers.
+Although only the normalisation component of \normAnn has been finsished so far, we have good reason to believe that transformation-based annotation of norm deviations, along with a coherent set of categories for norm deviations and a detailed guideline, will increase the efficiency and consistency by minimising subjectivity and increasing interannotator agreement. First, the conceptually different tasks of deciding on a target hypotheses (with resulting normalisations) and annotating norm deviations are separated. Also, since the source text and normalised text are displayed in separate panes, with the normalised text being incrementally updated, the annotator has access to all the relevant information for familiarising themselves with the specific interlanguage of the learner, and thus to make consistent decisions on target hypotheses. In addition, the process could be made more efficient by inferring a preliminary error annotation from the editing operations. An additional advantage is that a parallel text is incrementally constructed based on the editing operations, thereby allowing for search in either or both of the source and normalised texts, and training of systems for automated annotation of norm deviations \cite{sproat2016rnn}. We expect our approach to be useful also for other kinds of problems which involve parallel texts and manual annotation, such as text simplification, standardisation of short message texts, essay-grading by teachers and linguistic typology. % or peer-reviewers.
 
 %We anticipate that our approach could also be useful for other problems which are based on parallel texts and systematic differences between them are vital for developing automated tools for the purpose, e.g. text simplification, standardizing short message texts, or essay-grading by teachers or peer-reviewers. % for personal or online (collaborative ?) feedback (teachers/peer reviewers suggesting better rewriting of a learner's text (e.g. Lo, Wang and Yeh (2008) and Yeh and Lo (2009) for their Online Annotator for EFL Writing say   “that online annotation functionalities for manipulating, rearranging, search, displaying and sharing annotations can be used to support EFL error correction and corrective feedback, especially the collaboration between teachers and students outside the classroom” (p. 883))...
 
