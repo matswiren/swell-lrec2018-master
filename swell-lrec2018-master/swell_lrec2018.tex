@@ -47,7 +47,7 @@
 This paper describes ongoing work on a tool % the \normAnn system
 for annotation of norm deviations (errors) in second-language learner texts, a key component in an intended infrastructure for research on Swedish as a second language. Unlike traditional approaches which treat this as a single task applied to a static learner text, our approach is divided into two steps to reflect the conceptual structure of the problem: a) normalisation  of the learner text by transforming (editing) it to reflect the target hypotheses, and b) the actual norm-deviation annotation, supported by visualisation of the differences between source and normalisation. Another distinct feature of our approach is that a parallel text is generated in the transformation step, with word alignments inferred from the editing operations. This parallel text is a useful resource in its own right, by allowing for search in either or both of the source and normalised texts, and for training of systems for automated annotation of norm deviations. We describe the normalisation component of \normAnn and outline the associated component for annotation of norm deviations currently being implemented. %, as well as the overall intended workflow. %[181 words out of 200 allowed]
 \newline
-\Keywords{second language learner corpora, error annotation, normalisation}}}
+\Keywords{second language learner corpora, error annotation, normalisation}}
 
 \begin{document}
 
@@ -118,6 +118,15 @@ The basic problem with this kind of approach is that it conflates the conceptual
 In Falko \cite{ludeling05multi-levelerror} and MERLIN \cite{MERLIN2014}, target hypothesis corrections have a more independent status in the sense that they are entered in a separate step prior to error annotation, but the normalised text still does not seem to be available in its entirety.
 
 To circumvent these problems, and to reduce subjectivity and increase interannotator agreement, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some given criteria, and annotating the norm deviations corresponding to the changes. Furthermore, as a result of this process, a parallel corpus consisting of the learner source text and the normalised text is incrementally constructed.
+\dan{State the contributions of the paper?
+Our contributions are:
+\begin{itemize}
+\item An editor for norm deviations that works by transforming a text and as a side product produces a
+parallell corpus (Section~\ref{sec:norm_tool})
+\item By viewing normalisation as a parallell corpus, we show that we can label using a
+norm deviation taxonomy on the aligment edges (Section~\ref{sec:ann_tool})
+\end{itemize}}
+
 
 \section{Target Hypotheses and Editing}
 \label{sec:targethypothesis}
@@ -141,6 +150,7 @@ In MERLIN \cite{MERLIN2014} two levels are used: a) minimal corrections pertaini
 
 We allow editing operations of characters and tokens, involving insertions, deletions, substitutions % \textcolor{red}{EV:("substitution" instead of "replacement"?; merge? split? - separate actions or as variants of replacement, insertion and deletion?)} and move \textcolor{red}{EV:(Is it a term?)}
 or moves (see Section~\ref{sec:norm_tool}), all along creating a parallel version of the original text. By keeping track of the sequence of edit operations, an additional advantage could be gained, namely, that a preliminary error annotation can be automatically inferred (see Section~\ref{sec:ann_tool}). %This is something that we plan to explore later on in the project.
+\dan{Move this overview of the paper to section 1?}
 
 It might be argued that insertions, deletions and
 replacements could be computed automatically from the differences between the source and normalised texts, but moves of tokens (which we need in order to keep track of word-order changes) result in added complexity \cite{ShapiraStorer2007} and ambiguities, which is why we log the editing operations.
