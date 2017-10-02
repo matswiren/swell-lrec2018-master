@@ -89,7 +89,7 @@ The need for data is omnipresent in language-technology projects, not the least 
 Automatic analysis of learner data is very challenging, however, since part-of-speech taggers and syntactic parsers are almost always trained on the standard language. Annotation of norm deviations (that is, errors\footnote{We use the term {\em norm deviation} rather than "error" as a neutral term with respect to the idiosyncrasies of the interlanguage of the learner \cite{Selinker1972}. Similarly, we refer to the changes imposed on a learner text to reflect the norms of the target language as {\em normalisation}. }) is therefore predominantly a manual process. Like all manual annotation, it is very time-consuming, but the problem is exacerbated by the high degree of subjectivity in deciding what the deviation is and of what the correct form would then be.
 
 This paper describes % a tool, \normAnn,
-\normAnn which aims at a more efficient handling of normalisation and annotation of norm deviations, thereby alleviating some of the data bootleneck. The work is carried out in the context of a project for constructing an infrastructure for research on Swedish as a second language (SweLL\footnote{%Research Infrastructure for Swedish as a Second Language,
+\normAnn which aims at a more efficient handling of normalisation and annotation of norm deviations, thereby alleviating some of the data bottleneck. The work is carried out in the context of a project for constructing an infrastructure for research on Swedish as a second language (SweLL\footnote{%Research Infrastructure for Swedish as a Second Language,
 {\scriptsize\url{https://spraakbanken.gu.se/eng/swell_infra}}}), in which \normAnn will constitute a key component.
 
 %In this paper we develop the idea of \textit{transformation-based normalization} of learner texts as a primary step in annotation of norm deviations.
@@ -114,15 +114,15 @@ This paper describes % a tool, \normAnn,
 % (for an overview of error annotation schemes and their implementation, see Lüdeling and Hirschmann, 2015,
 
 Annotation of norm deviations in second-language learner texts is typically done with a purpose-built editing tool, using a hierarchical set of error categories \cite{Granger2008}. For example, in ASK \cite{tenfjord2006ask}, the editor used is the XML editor Oxygen, customised with pop-up menus that reflect the chosen set of error categories. Specifically, annotation of an error involves inserting an XML
-{\em sic} tag with a {\em type} attribute encoding the error category, a {\em desc} attribute endoding the error subcategory, and a {\em corr} attribute encoding the correct (normalised) form of the token or tokens. By running a set of XSLT scripts, the XML file can be translated to an HTML format which can be viewed in a web browser, thereby facilitating proofreading of the annotation.
+{\em sic} tag with a {\em type} attribute encoding the error category, a {\em desc} attribute encoding the error subcategory, and a {\em corr} attribute encoding the correct (normalised) form of the token or tokens. By running a set of XSLT scripts, the XML file can be translated to an HTML format which can be viewed in a web browser, thereby facilitating proofreading of the annotation.
 
 The basic problem with this kind of approach is that it conflates the conceptually separate stages of (traditionally speaking) error coding, namely, error detection, correction and annotation
 % Corder 1974
-\cite[page 266]{Ellis1994,Granger2008}. This is because correction (normalisation, based on a target hypothesis) is carried out as a subtask of error annotation instead of as an independent task, prior to and separate from error annotation. Also, since normalisations are only a by-product of error annotations, the corrected text as a whole is not readily available for inspection after each annotation step, and as a result it may be more difficult to produce a consistent normalisation.
+\cite[page 266]{Ellis1994,Granger2008}. This is because correction (normalisation, based on a target hypothesis) is carried out as a sub task of error annotation instead of as an independent task, prior to and separate from error annotation. Also, since normalisations are only a by-product of error annotations, the corrected text as a whole is not readily available for inspection after each annotation step, and as a result it may be more difficult to produce a consistent normalisation.
 
 In Falko \cite{ludeling05multi-levelerror} and MERLIN \cite{MERLIN2014}, target hypothesis corrections have a more independent status in the sense that they are entered in a separate step prior to error annotation, but the normalised text still does not seem to be available in its entirety.
 
-To circumvent these problems, and to reduce subjectivity and increase interannotator agreement, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some given criteria, and annotating the norm deviations corresponding to the changes. Furthermore, as a result of this process, a parallel corpus consisting of the learner source text and the normalised text is incrementally constructed. Thus, our contribution is a system for transformation-based annotation of norm deviations which includes the following two components:
+To circumvent these problems, and to reduce subjectivity and increase inter-annotator agreement, our approach is based on dividing error coding into two steps: normalising the text by transforming (editing) it into a corrected form according to some given criteria, and annotating the norm deviations corresponding to the changes. Furthermore, as a result of this process, a parallel corpus consisting of the learner source text and the normalised text is incrementally constructed. Thus, our contribution is a system for transformation-based annotation of norm deviations which includes the following two components:
 
 \begin{itemize}
 \item An editor in which a learner source text can be normalised and a parallel corpus of the two texts is simultaneously generated (Sections~\ref{sec:targethypothesis} and \ref{sec:norm_tool}).
@@ -180,10 +180,10 @@ the existing tools corresponded to our expectations, hence we set off to build
 our own normalisation tool.
 
 Our first key observation was to view the construction of a target hypothesis
-as creating a parallell corpus where one of the texts is the the source learner
+as creating a parallel corpus where one of the texts is the the source learner
 text, and the words in this text is linked to the other text: the target
 hypothesis of the normalisation.
-However, we realized that these links can be maintained automatically for
+However, we realised that these links can be maintained automatically for
 the annotator while they edit the source text into the target text in
 text editing area if proper logging of the editing operations are put
 into place.
@@ -212,7 +212,7 @@ in the target text (the bottom row).
 We will use an example sentence in English to illustrate
 what editing operations our tool supports and how to execute them:
 ``\emph{Examples high light here lotsof futures}''.
-We demonstate our tool by normalising this using our tool.
+We demonstrate our tool by normalising this using our tool.
 Initially, the source and target hypothesis text are
 the same and each word is connected to itself and the diagram looks as
 Figure~\ref{fig:features0}. Now we start editing, addressing these
@@ -228,8 +228,8 @@ deviations:
 }
 \features{features0}{The initial state.}
 \features{features1}{Editing within a word normalises spelling.}
-\features{features2}{Removing whitespace normalises oversplitting.}
-\features{features3}{Adding space within a word normalises overcompounding.}
+\features{features2}{Removing white space normalises over splitting.}
+\features{features3}{Adding space within a word normalises over compounding.}
 \features{features4}{Drag and drop (or cut and paste) normalises word order.}
 \features{features5}{New words can be inserted to normalise missing word.}
 \caption{Editing operations are reflected in the links
@@ -251,21 +251,21 @@ delete the \emph{u} character with backspace and type in \emph{ea} to get \emph{
 
 We show differences inside tokens by calculating a diff automatically using
 standard techniques for finding edit scripts.  Deletions are shown in red
-with overstrike, and insertions in green.  This intra-token diff
+with strike-through, and insertions in green.  This intra-token diff
 is recalculated after every edit (internally only replacements on the
 token level are stored.)  This highlighting is simply an aid for the user.
 
-\item {\it Oversplitting}: normalised by removing spaces.
+\item {\it Over splitting}: normalised by removing spaces.
 The user removes the space in \emph{high light}, obtaining the state in Figure~\ref{fig:features2}.
 
-\item {\it Overcompounding}: conversely, this is normalised by inserting a space inside a word.
+\item {\it Over compounding}: conversely, this is normalised by inserting a space inside a word.
 This is how the word \emph{lotsof} has been split into two in Figure~\ref{fig:features3}.
 
 \item {\it Word order}: normalised by drag and drop using the mouse.
 An alternative is to use the standard keyboard shortcuts for cut and paste.
 The word in the source text remain connected to the target word.
 Using either of these methods, the user has moved one word to the end of the
-sentence in Figure~\ref{fig:features4}. Note that it is the complexity and ambiguties from word order changes
+sentence in Figure~\ref{fig:features4}. Note that it is the complexity and ambiguities from word order changes
 are the reason why we log the editing operations.
 
 %It might be argued that insertions, deletions and replacements could be
@@ -382,7 +382,7 @@ Annotators are free to perform the annotation for each new change, or to carry o
 \begin{figure}[t] % {0.5\textwidth}
 \includegraphics[height=1.9cm, trim={-0.5cm 0.55cm 0 0.1cm}, clip]{features7.pdf}
 \caption{Example annotated sentence using ASK taxonomy. From left to right:
-missing word, oversplitting, overcompounding, orthographic deviation and
+missing word, over splitting, over compounding, orthographic deviation and
 word order.
 \label{fig:normann}}
 \end{figure}
@@ -408,8 +408,8 @@ A possibility that we have not yet made use of is that a preliminary error annot
 suggest relevant labels when noticing changes in common suffixes for tense
 or definiteness.
 Many deviation labels are easy to infer even without any linguistic
-insight: missing or redundant words, deviant word order, overcompounding
-and oversplitting.
+insight: missing or redundant words, deviant word order, over compounding
+and over splitting.
 This is something that we plan to explore later on in the project.
 % More herustics for automatic label suggestion can be done independently of the rest of the
 % user interface, like a plugin, and more heuristics can be added as the
