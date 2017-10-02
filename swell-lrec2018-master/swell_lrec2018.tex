@@ -190,7 +190,7 @@ changes are highlighted, and finally one which shows links between tokens in the
 To normalise a source text using our tool the annotator uses
 the text area in the middle of Figure~\ref{fig:screenshot}.
 
-The important thing to understand is that the annotator only need to edit
+The important thing to understand is that the annotator only needs to edit
 within this text area, which works just like a text field in a normal program.
 
 Each edit the user does in this text area is reflected in the underlying
@@ -199,10 +199,10 @@ edits and word order changes between the source and the target text.
 The source text is shown on top and the target hypothesis text below, with
 edges linking connected words together.
 
-To illustrate what edits we support we this example sentence in English:
+To illustrate what edits we support, we use this example sentence in English:
 ``\emph{Examples high light here lotsof futures}''
-and see how we can normalise this using our tool by simply editing in
-the text area.  Initially the source and target hypotheses text are
+and demonstate how we can normalise it using our tool by simply editing in
+the text area.  Initially, the source and target hypothesis text are
 the same and each word is connected to itself and the diagram looks as
 Figure~\ref{fig:features0}.
 
@@ -227,12 +227,11 @@ Figure~\ref{fig:features0}.
 
 \begin{itemize}
 \item {\it Deviant spelling}: normalise by editing the text.
-In Figure~\ref{fig:features1} the user has removed a characted
-and inserted two new.
+In Figure~\ref{fig:features1} the user has removed a character and inserted two new.
 
 We show differences inside tokens by
 calculating a diff automatically using standard techniques for finding
-edit scripts.  Deletions are shown in red with overstrike and insertions
+edit scripts.  Deletions are shown in red with overstrike, and insertions
 in green. % \dan{refer to the picture}
 Note that this intra-token diff is recalculated after every edit
 as interntally only replacements on the token level are stored.  However,
@@ -246,10 +245,10 @@ Two words have been split in Figure~\ref{fig:features3}.
 
 \item {\it Word order}: normalise by drag and drop. Cut and paste can also be used.
 The word in the source text remain connected to the target word.
-One move has been moved to the end of the sentence in Figure~\ref{fig:features4}.
+One word has been moved to the end of the sentence in Figure~\ref{fig:features4}.
 
-Note that it is the complexity and ambiguties that come from word order changes
-is the reason why the log the editing operations.
+Note that the complexity and ambiguties that come from word order changes
+are the reason why we log the editing operations.
 
 %It might be argued that insertions, deletions and replacements could be
 %computed automatically from the differences between the source and normalised
@@ -353,15 +352,12 @@ and can be tried online\footnote{\url{https://demo.spraakdata.gu.se/dan/swell-ed
 %not work to only put labels on the source text.
 
 The norm-deviation annotation is carried out by selecting material, either
-one or several changed tokens that have been changed in {\em Normalised text},
-or the corresponding aligned component of source and normalisation
-in {\em Alignment} in Figure~\ref{fig:screenshot}.
+one or several tokens that have been changed in {\em Normalised text},
+or the corresponding component of joint source and normalisation in {\em Alignment} in Figure~\ref{fig:screenshot}.
 When the annotator has selected a change, they add a deviation
-category from a pop-up menu, and the category is then displayed on the
-corrsponding link in {\em Alignment} (see Figure~\ref{fig:normann}).
-The norm deviation annotation can be done after normalising the text, but
-annotators can go back and forth between the modes if they want to improve
-the normalisation.
+category from a pop-up menu, whereupon the system displays this category on the
+corresponding link in {\em Alignment}, as shown in Figure~\ref{fig:normann}.
+Annotators are free to perform the annotation for each new change, or to carry out normalisation of a longer text before performing the annotation, if a separation of these tasks is preferred.
 
 %\footnote{Note to reviewers: labelling components is not yet in the interface but is scheduled to be completed in a few weeks, well before the camera-ready version.}
 
@@ -374,10 +370,7 @@ word order.
 \end{figure}
 
 The taxonomy of deviations is based on the error categories in the Norwegian
-learner corpus ASK \cite{tenfjord2006ask}, with % to take advantage of the
-experiences from the closely related target language there.  so far with a
-few extensions of the categories for morphological deviations.
-However, the editor may be used with any taxonomy.
+learner corpus ASK \cite{tenfjord2006ask}, by which we take advantage of the experiences from the closely related target language there. So far we have made a few extensions of the ASK categories for morphological deviations. The particular taxonomy used is independent of our tool, though.
 
 %For simplicity the labels range over an entire connected
 %component in the graph.
@@ -393,22 +386,18 @@ However, the editor may be used with any taxonomy.
 % This should also be possible by using keyboard shortcuts in the editor.
 % Frequent operations such as transposing words can also get dedicated keyboard bindings.
 
-A preliminary error annotation could automatically be inferred.
-For example, in a suffixing language like Swedish we can automatically
-suggest revelant labels when noticing changes in common suffixes for tense
+A possibility which we have not yet made use of is that a preliminary error annotation could be inferred from the sequence of editing operations. For example, in a suffixing language like Swedish we could automatically
+suggest relevant labels when noticing changes in common suffixes for tense
 or definiteness.
 Many deviation labels are easy to infer even without any linguistic
 insight: missing or redundant words, deviant word order, overcompounding
 and oversplitting.
-This is something that we plan to explore further later on in the project.
+This is something that we plan to explore later on in the project.
 % More herustics for automatic label suggestion can be done independently of the rest of the
 % user interface, like a plugin, and more heuristics can be added as the
 % project continues.
 
-Note that we can use the same system for anonymizing the text by setting a
-special anonymization label. An anonymised version of the corpus stripped
-out of source tokens connected to such an anonymisation label may be released.
-\dan{could be moved to discussion}
+%Note that we can use the same system for anonymizing the text by setting a special anonymization label. An anonymised version of the corpus stripped out of source tokens connected to such an anonymisation label may be released. \dan{could be moved to discussion}
 
 \section{Discussion}
 \label{sec:discussion}
@@ -416,11 +405,14 @@ out of source tokens connected to such an anonymisation label may be released.
 % Summarise overall workflow\ldots ?
 % \elena{Merge together Disussion and Conclusions for now?}
 
-Although only the normalisation component of \normAnn has been finsished so far, we have good reason to believe that transformation-based annotation of norm deviations, along with a coherent set of categories for norm deviations and a detailed guideline, will increase the efficiency and consistency by minimising subjectivity and increasing interannotator agreement. \dan{Because:}
-First, the conceptually different tasks of deciding on a target hypotheses (with resulting normalisations) and annotating norm deviations are separated.
-Also, since the source text and normalised text are displayed in separate panes, with the normalised text being incrementally updated, the annotator has access to all the relevant information for familiarising themselves with the specific interlanguage of the learner, and thus to make consistent decisions on target hypotheses.
-In addition, the process could be made more efficient by inferring a preliminary error annotation from the editing operations. An additional advantage is that a parallel text is incrementally constructed based on the editing operations, thereby allowing for search in either or both of the source and normalised texts, and training of systems for automated annotation of norm deviations \cite{sproat2016rnn}.
-We expect our approach to be useful also for other kinds of problems which involve parallel texts and manual annotation, such as text simplification, standardisation of short message texts, essay-grading by teachers and linguistic typology. % or peer-reviewers.
+Although only the normalisation component of \normAnn has been finished so far (whereas the annotation component is being implemented), we believe that the overall transformation-based annotation of norm deviations
+%along with a coherent set of categories for norm deviations and a detailed guideline,
+will increase the efficiency and consistency of this process, for the following reasons: %by minimising subjectivity and increasing interannotator agreement. \dan{Because:}
+First, the conceptually different tasks of normalisation (deciding on target hypotheses) and annotation of the norm deviations are separated, with the normalisation arguably being more transparent than in previous approaches. Since the source text and normalised text are displayed separately, and the normalised text is updated incrementally, the annotator has access to all the full information for familiarising themselves with the specific interlanguage of the learner, and thus to make consistent decisions on target hypotheses.
+%In addition, the process could be made more efficient by inferring a preliminary error annotation from the editing operations.
+An additional advantage is the parallel text that is incrementally constructed based on the editing operations, thereby allowing for search in either or both of the source and normalised texts, and training of systems for automated annotation of norm deviations \cite{sproat2016rnn}.
+We expect our approach to be useful also for other kinds of problems which involve parallel texts and manual annotation, such as text simplification, %standardisation of short message texts, -- Not sure what this is? \elena: sms
+ essay grading and anonymisation. % and problems in linguistic typology. % or peer-reviewers.
 
 %We anticipate that our approach could also be useful for other problems which are based on parallel texts and systematic differences between them are vital for developing automated tools for the purpose, e.g. text simplification, standardizing short message texts, or essay-grading by teachers or peer-reviewers. % for personal or online (collaborative ?) feedback (teachers/peer reviewers suggesting better rewriting of a learner's text (e.g. Lo, Wang and Yeh (2008) and Yeh and Lo (2009) for their Online Annotator for EFL Writing say   “that online annotation functionalities for manipulating, rearranging, search, displaying and sharing annotations can be used to support EFL error correction and corrective feedback, especially the collaboration between teachers and students outside the classroom” (p. 883))...
 
