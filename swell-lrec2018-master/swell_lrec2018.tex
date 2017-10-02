@@ -210,20 +210,29 @@ Figure~\ref{fig:features0}.
 \centering
 \newcommand{\features}[2]{
 \begin{subfigure}[t]{0.5\textwidth}
-\includegraphics[height=1.8cm, trim={-0.5cm 0.55cm 0 0}, clip]{#1.pdf}
+\includegraphics[height=2cm, trim={-0.5cm 0.55cm 0 0}, clip]{#1.pdf}
 \caption{#2 \label{fig:#1}}
 \end{subfigure}
 }
-
 \features{features0}{The initial state.}
 \features{features1}{Normalising spelling.}
 \features{features2}{Normalising oversplitting.}
 \features{features3}{Normalising overcompounding.}
 \features{features4}{Normalising word order.}
 \features{features5}{Inserting missing word.}
-\features{features6}{Alternative analysis to illustrate redundant word.}
-\caption{Example editing.}
+\caption{Example normalisation steps.}
 \end{figure}
+
+\newcommand{\featuresF}[2]{
+\begin{figure}[t]
+\includegraphics[height=2cm, trim={-0.5cm 0.55cm 0 0}, clip]{#1.pdf}
+\caption{#2 \label{fig:#1}}
+\end{figure}
+}
+
+
+
+\featuresF{features6}{Alternative analysis to illustrate redundant word.}
 
 \begin{itemize}
 \item {\it Deviant spelling}: normalise by editing the text.
