@@ -18,6 +18,9 @@
 \usepackage[utf8]{inputenc}
 
 \usepackage{hyperref}
+\hypersetup{%
+    pdfborder = {0 0 0}
+}
 \usepackage{xstring}
 
 \usepackage[dvipsnames]{xcolor}
@@ -124,7 +127,7 @@ To circumvent these problems, and to reduce subjectivity and increase interannot
 \begin{itemize}
 \item An editor in which a learner source text can be normalised and a parallel corpus of the two texts is simultaneously generated (Sections~\ref{sec:targethypothesis} and \ref{sec:norm_tool}).
 \item Integrated with this, a facility for annotating the normalisations (changes) with norm-deviation categories. (Section~\ref{sec:ann_tool})
-\end{itemize}}
+\end{itemize}
 
 
 \section{Target Hypotheses}
@@ -147,17 +150,8 @@ As pointed out above, annotation of a norm deviation always involves an interpre
 Furthermore, some systems allow for several levels of target hypotheses. In the Czech learner corpus of \newcite{Hana2012} a first level normalises grammatical forms without context information. All other deviations (e.g.\ word order) belong to a second level and take the whole sentence into consideration.
 In MERLIN \cite{MERLIN2014} two levels are used: a) minimal corrections pertaining only to orthographic and grammatical errors and b) corrections to handle sociolinguistic, lexical and pragmatic deviations to arrive at what is referred to as an acceptable text. Again, \normAnn does not handle this, but it would be possible to do so by maintaining several levels of aligned normalisations. The first level (with basic corrections) would then be aligned to the source text, and the second level (with additional corrections) would be aligned to the first level.
 
-\mats{Dan, I think this paragraph belongs to Section 3 -- do you need anything of it there? Otherwise we should skip it.}
-We allow editing operations of characters and tokens, involving insertions, deletions, substitutions % \textcolor{red}{EV:("substitution" instead of "replacement"?; merge? split? - separate actions or as variants of replacement, insertion and deletion?)} and move \textcolor{red}{EV:(Is it a term?)}
-or moves (see Section~\ref{sec:norm_tool}), all along creating a parallel version of the original text. By keeping track of the sequence of edit operations, an additional advantage could be gained, namely, that a preliminary error annotation can be automatically inferred (see Section~\ref{sec:ann_tool}). %This is something that we plan to explore later on in the project.
-%\dan{Move this overview of the paper to section 1?}
-
-\mats{Dan, I think this paragraph belongs to Section 3 -- do you need anything of it there? Otherwise we should skip it.}
-It might be argued that insertions, deletions and
-replacements could be computed automatically from the differences between the source and normalised texts, but moves of tokens (which we need in order to keep track of word-order changes) result in added complexity \cite{ShapiraStorer2007} and ambiguities, which is why we log the editing operations.
-
 \begin{figure*}
-\includegraphics[width=\textwidth, trim={0 0.6cm 0 0}, clip]{screenshot.pdf}
+\includegraphics[width=\textwidth, trim={0 1.3cm 0 0}, clip]{screenshot.pdf}
 \emph{\small I live in an apartment. I have lived there for one year. I would like to have a big house.}
 \caption{Screenshot of an editing session in progress. The three panes in the upper row are from left to right:
 1) the source text which cannot be edited,
@@ -179,6 +173,19 @@ showing how words have been moved.
 \label{sec:norm_tool}
 % \dan{Should we name the tool?} \elena{That would be great. Any ideas? SweLL-norm?}
 % \mats{NormAnn} \elena{I like NormAnn - refers both to normalization and to annotation}
+
+We wanted our tool to have the feel of a conventional text editor and yet retain
+information about how a word was normalised or where it was moved to. None of
+the existing tools corresponded to our expectations, hence we set off to build
+our own normalisation tool. We wanted it to be both simple and expressive.
+
+During normalisation, the user needs to pay attention to how their edits affect
+the links between the source text and the target hypothesis. We facilitate
+this by providing views of their difference and the links between them:
+we use four panes (see Figure~\ref{fig:screenshot}): one containing the
+frozen source text, one in which the editing takes place, one in which
+changes are highlighted, and finally one which shows links between tokens in the source text and normalised text.
+% To facilitate normalisation and to support reliability and consistency,
 
 To normalise a source text using our tool the annotator uses
 the text area in the middle of Figure~\ref{fig:screenshot}.
@@ -223,6 +230,14 @@ Figure~\ref{fig:features0}.
 In Figure~\ref{fig:features1} the user has removed a characted
 and inserted two new.
 
+We show differences inside tokens by
+calculating a diff automatically using standard techniques for finding
+edit scripts.  Deletions are shown in red with overstrike and insertions
+in green. % \dan{refer to the picture}
+Note that this intra-token diff is recalculated after every edit
+as interntally only replacements on the token level are stored.  However,
+this clear highlighting of differences works as an aid for the user.
+
 \item {\it Oversplitting}: normalise by removing spaces.
 Two words have been merged in Figure~\ref{fig:features2}.
 
@@ -233,89 +248,79 @@ Two words have been split in Figure~\ref{fig:features3}.
 The word in the source text remain connected to the target word.
 One move has been moved to the end of the sentence in Figure~\ref{fig:features4}.
 
+Note that it is the complexity and ambiguties that come from word order changes
+is the reason why the log the editing operations.
+
+%It might be argued that insertions, deletions and replacements could be
+%computed automatically from the differences between the source and normalised
+%texts, but moves of tokens (which we need in order to keep track of word-order
+%changes) result in added complexity \cite{ShapiraStorer2007} and ambiguities,
+%which is why we log the editing operations.
+
 \item {\it Missing word}: normalise by inserting the missing word.
 The target word is not connected to any source word.
 See Figure~\ref{fig:features5}.
 
 \item {\it Redundant word}: normalise by deleting the word.
 The source word is now not connected to anything.
-To exemplify this we instead remove ``here'', see Figure~\ref{fig:features6}.
+In Figure~\ref{fig:features6} we exemplify with
+an alternative analysis where the word ``here'' has been removed.
 
 \end{itemize}
 
-We wanted our tool to have the feel of a conventional text editor and yet retain
-information about how a word was normalised or where it was moved to. None of the existing tools corresponded to our expectations, hence we set off to build our own normalisation tool. We wanted it to be both simple and expressive.
-%\dan{Comment that we did not find any tool fulfilling our wishes/requirements?}
+%To be able to track word movement we must define what tokens are.
+%For now we make the simple definition that tokens are words separated
+%by whitespace and that tokens themselves cannot contain whitespace.
+%Thus adding whitespace between non-whitespace characters makes a new token.
+%Conversely, removing all whitespace between two tokens merges them into one token.
 
-To facilitate normalisation and to support reliability and consistency,
-we use four panes (see Figure~\ref{fig:screenshot}): one containing the
-frozen source text, one in which the editing takes place, one in which
-changes are highlighted, and finally one which shows links between tokens in the source text and normalised text.
-% Where should this paragraph be?
-We assume that during normalisation, the user can be required to pay attention
-to how their edits affect the links between the source text and the target
-hypothesis. We facilitate this by providing views of their difference and
-the links between them.
-
-To be able to track word movement we must define what tokens are.
-For now we make the simple definition that tokens are words separated
-by whitespace and that tokens themselves cannot contain whitespace.
-Thus adding whitespace between non-whitespace characters makes a new token.
-Conversely, removing all whitespace between two tokens merges them into one token.
-
-For expressing overcompounding and oversplitting we need links between tokens
-that are many-to-one and one-to-many. We express insertion or deletion with
-zero-to-one and one-to-zero links. We initially experimented with not allowing
-many-to-many links but this asymmetry yielded no substantial benefits
-and we now allow many-to-many links.
+%For expressing overcompounding and oversplitting we need links between tokens
+%that are many-to-one and one-to-many. We express insertion or deletion with
+%zero-to-one and one-to-zero links. We initially experimented with not allowing
+%many-to-many links but this asymmetry yielded no substantial benefits
+%and we now allow many-to-many links.
 % of which we outline some benefits of below
-For simplicity we require each component
-of links must be complete: missing edges are automatically added by
-transitivity.
+%For simplicity we require each component
+%of links must be complete: missing edges are automatically added by
+%transitivity.
 
-We now outline how to instrument a traditional text editor to support links.
-When starting the editing session the source and target are identical so the
-links are initialised with the identity mapping. The user starts editing
-by inserting and/or deleting characters.
-We generalise this to each edit replacing the current selection with a
-string. Usually the selection is just the cursor and the ``replacement'' string
-is one character: then the modification is an insertion.
-If the selection has non-zero width the user did an actual replacement.
-Deletions are modelled by replacing with the empty string.
+%We now outline how to instrument a traditional text editor to support links.
+%When starting the editing session the source and target are identical so the
+%links are initialised with the identity mapping. The user starts editing
+%by inserting and/or deleting characters.
+%We generalise this to each edit replacing the current selection with a
+%string. Usually the selection is just the cursor and the ``replacement'' string
+%is one character: then the modification is an insertion.
+%If the selection has non-zero width the user did an actual replacement.
+%Deletions are modelled by replacing with the empty string.
 %The inserted string can also have length greater than one if the user pastes text into the editor.
 
-\subparagraph{Undo} We support unlimited chronological undo and redo operations.
-For convenience we also support undo at a specific position. % in the hypothesis.
-If this position is part of a compound, the entire compound is reverted.
-Tokens are rearranged into their original positions, which
-can be recovered using unmoved words as reference points.
-Undoing is very useful to get links exactly right, which occasionally takes a
-few tries.
-% Auto-revert: we automatically auto-revert compounds if the user writes them
-% back to the original
-
-\subparagraph{Intra-token diffs} We show differences inside tokens by
-calculating a diff automatically using standard techniques for finding
-edit scripts.  Deletions are shown in red with overstrike and insertions
-in green. \dan{refer to the picture}
-Note that this intra-token diff is recalculated after every edit
-as interntally only replacements on the token level are stored.  However,
-this clear highlighting of differences works as an aid for the user.
 
 \paragraph{Implementation}
 We have implemented a working prototype as a single-page web application.
 It does not rely on any server backend: all processing is done in the
-client's browser. We use an off-the-shelf editor for the browser,
-CodeMirror \cite{CodeMirror}.
-Besides the CodeMirror's internal state, we keep an array of the tokens in the
-target text together with links as indexes of tokens in the source,
-and keep this in sync with the CodeMirror editor as described in this section.
-
-The normalisation editor may also be used as a library and can in this way
+client's browser.
+The editor has support for unlimited chronological undo and redo operations.
+For convenience we also support undoing the normalisation at a specific position.
+Undoing is very useful to get links exactly right, which occasionally takes a
+few tries.
+% If this position is part of a compound, the entire compound is reverted.
+% Tokens are rearranged into their original positions, which
+% can be recovered using unmoved words as reference points.
+% Auto-revert: we automatically auto-revert compounds if the user writes them
+% back to the original
+The editor may also be used as a library and can in this way
 be included in other tools and webpages.
 The implementation is free open source software released under the
 MIT license\footnote{\url{https://github.com/spraakbanken/swell-editor}},
 and can be tried online\footnote{\url{https://demo.spraakdata.gu.se/dan/swell-editor}}.
+
+%We use an off-the-shelf editor for the browser,
+%CodeMirror \cite{CodeMirror}.
+%Besides the CodeMirror's internal state, we keep an array of the tokens in the
+%target text together with links as indexes of tokens in the source,
+%and keep this in sync with the CodeMirror editor as described in this section.
+
 % \dan{Should we link to a demo version of the editor? Do LREC reviewers care about running tools? It would be a good complement nevertheless.}
 % \elena{You could add the link in a footnote, I think it is always a good coplement. But you will have to test it in different browsers - e.g. in Internet Explorer it may fail}
 % \dan{MIT License? This is what I have been supposing since it is the standard at SB}
@@ -332,16 +337,31 @@ and can be tried online\footnote{\url{https://demo.spraakdata.gu.se/dan/swell-ed
 % Could refer to Hinze's article
 % I don't think anyone cares
 
+% We allow editing operations of characters and tokens, involving insertions, deletions, substitutions % \textcolor{red}{EV:("substitution" instead of "replacement"?; merge? split? - separate actions or as variants of replacement, insertion and deletion?)} and move \textcolor{red}{EV:(Is it a term?)}
+% or moves (see Section~\ref{sec:norm_tool}), all along creating a parallel version of the original text. By keeping track of the sequence of edit operations, an additional advantage could be gained, namely, that a preliminary error annotation can be automatically inferred (see Section~\ref{sec:ann_tool}). %This is something that we plan to explore later on in the project.
+
 \section{Annotation of Norm Deviations}
 \label{sec:ann_tool}
 
-\mats{Dan, om du hinner så vore det kanske bra att ha rubriker på panelerna i figur 1 som man kan hänvisa till, till exempel Source text, Normalised text, Changes och Alignment of source text and normalised text}
+%By putting the labels on components of edges (rather than the alternative
+%to put them on the source tokens) gives the advantage that any part of the
+%interface can be used to annotate the norm deviations: the user may click
+%words in the source text and choose a norm deviation label from a menu. Or,
+%they can click on the graph directly. Or in any of the other two panes,
+%since they are all connected via the links.  Further, insertions (due to
+%missing words) do not correspond to any token in the source text so it would
+%not work to only put labels on the source text.
 
-\mats{Varför är "Jag" blått i Source text?}
-
-The norm-deviation annotation is carried out by selecting material, either one or several changed tokens that have been changed in {\tt Normalised text}, or the corresponding aligned component of source and normalisation in {\tt Alignment} (is this right???) in Figure~\ref{fig:screenshot}. The taxonomy of deviations is based on the error categories in the Norwegian learner corpus ASK \cite{tenfjord2006ask}, with 
-% to take advantage of the experiences from the closely related target language there.
-so far with a few extensions of the categories for morphological deviations. When the annotator has selected a change, they add a deviation category from a pop-up menu, and the category is then displayed on the corrsponding link in {\tt Alignment} (see Figure ???).
+The norm-deviation annotation is carried out by selecting material, either
+one or several changed tokens that have been changed in {\em Normalised text},
+or the corresponding aligned component of source and normalisation
+in {\em Alignment} in Figure~\ref{fig:screenshot}.
+When the annotator has selected a change, they add a deviation
+category from a pop-up menu, and the category is then displayed on the
+corrsponding link in {\em Alignment} (see Figure~\ref{fig:normann}).
+The norm deviation annotation can be done after normalising the text, but
+annotators can go back and forth between the modes if they want to improve
+the normalisation.
 
 %\footnote{Note to reviewers: labelling components is not yet in the interface but is scheduled to be completed in a few weeks, well before the camera-ready version.}
 
@@ -353,27 +373,23 @@ word order.
 \label{fig:normann}}
 \end{figure}
 
+The taxonomy of deviations is based on the error categories in the Norwegian
+learner corpus ASK \cite{tenfjord2006ask}, with % to take advantage of the
+experiences from the closely related target language there.  so far with a
+few extensions of the categories for morphological deviations.
+However, the editor may be used with any taxonomy.
 
-For simplicity the labels range over an entire connected
-component in the graph.
-\footnote{Should this level of granularity prove too restrictive
-it can be lifted to allow labelling individual edges or tokens.}
+%For simplicity the labels range over an entire connected
+%component in the graph.
+%\footnote{Should this level of granularity prove too restrictive
+%it can be lifted to allow labelling individual edges or tokens.}
 
-By putting the labels on components of edges
-(rather than the alternative to put them on the source tokens) gives the advantage that any part of the interface can be used to annotate the norm deviations:
-the user may click words in the source text and choose a norm deviation label from a menu. Or, they can click on the graph directly. Or in any of the other two panes,
-since they are all connected via the links.
-Further, insertions (due to missing words) do not correspond to any token in the source text so it would not work to only put labels on the source text.
-
-The norm deviation annotation can be done after normalising the text, but annotators can go back and forth between the modes
-if they want to improve the normalisation.
-
-For ergonomics, when using the tool for several hours a day,
-we also provide keyboard bindings for labelling and navigating between
-the linked components.
+% For ergonomics, when using the tool for several hours a day,
+% we also provide keyboard bindings for labelling and navigating between
+% the linked components.
+% We can improve the user experience by allowing the annotator to connect
+% and disconnect links directly in the ladder diagram.
 % \mats{Det här passar kanske bättre i föregående sektion, Dan?}
-We can improve the user experience by allowing the annotator to connect
-and disconnect links directly in the ladder diagram.
 % This should also be possible by using keyboard shortcuts in the editor.
 % Frequent operations such as transposing words can also get dedicated keyboard bindings.
 
@@ -391,7 +407,8 @@ This is something that we plan to explore further later on in the project.
 
 Note that we can use the same system for anonymizing the text by setting a
 special anonymization label. An anonymised version of the corpus stripped
-out of source tokens connected to such an anonymisation label may be released.\dan{move to discussion}
+out of source tokens connected to such an anonymisation label may be released.
+\dan{could be moved to discussion}
 
 \section{Discussion}
 \label{sec:discussion}
