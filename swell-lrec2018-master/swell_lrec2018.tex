@@ -90,7 +90,7 @@ Automatic analysis of learner data is very challenging, however, since part-of-s
 
 This paper describes % a tool, \normAnn,
 \normAnn which aims at a more efficient handling of normalisation and annotation of norm deviations, thereby alleviating some of the data bootleneck. The work is carried out in the context of a project for constructing an infrastructure for research on Swedish as a second language (SweLL\footnote{%Research Infrastructure for Swedish as a Second Language,
-{\tt https://spraakbanken.gu.se/eng/swell\_infra}}), in which \normAnn will constitute a key component.
+{\scriptsize\url{https://spraakbanken.gu.se/eng/swell_infra}}}), in which \normAnn will constitute a key component.
 
 %In this paper we develop the idea of \textit{transformation-based normalization} of learner texts as a primary step in annotation of norm deviations.
 %The origins of the term go to a predecessing pilot within SweLL project \cite{correctAnnotator}, where the idea of logging user actions while editing learner essays was suggested, which in turn has been inspired by the Arabic tool QAWI \cite{QAWI}. We argue that this method is user-friendly and is effective in optimizing manual annotation process through prompting the annotation of norm deviations by comparing original and normalized versions of the same text.
@@ -177,86 +177,95 @@ showing how words have been moved.
 We wanted our tool to have the feel of a conventional text editor and yet retain
 information about how a word was normalised or where it was moved to. None of
 the existing tools corresponded to our expectations, hence we set off to build
-our own normalisation tool. We wanted it to be both simple and expressive.
+our own normalisation tool.
 
-During normalisation, the user needs to pay attention to how their edits affect
+Our first key observation was to view the construction of a target hypothesis
+as creating a parallell corpus where one of the texts is the the source learner
+text, and the words in this text is linked to the other text: the target
+hypothesis of the normalisation.
+However, we realized that these links can be maintained automatically for
+the annotator while they edit the source text into the target text in
+text editing area if proper logging of the editing operations are put
+into place.
+
+During normalisation, the user will need to pay attention to how their edits affect
 the links between the source text and the target hypothesis. We facilitate
 this by providing views of their difference and the links between them:
 we use four panes (see Figure~\ref{fig:screenshot}): one containing the
 frozen source text, one in which the editing takes place, one in which
 changes are highlighted, and finally one which shows links between tokens in the source text and normalised text.
-% To facilitate normalisation and to support reliability and consistency,
-
-To normalise a source text using our tool the annotator uses
+To normalise a source text using our tool the annotator only uses
 the text area in the middle of Figure~\ref{fig:screenshot}.
-
-The important thing to understand is that the annotator only needs to edit
-within this text area, which works just like a text field in a normal program.
+It works just like a text field in a normal text editor.
+% To facilitate normalisation and to support reliability and consistency,
+% We wanted it to be both simple and expressive.
+%The important thing to understand is that the annotator only needs to edit
+%within this text area,
 
 Each edit the user does in this text area is reflected in the underlying
-parallel structure and shown pictorially in the graph below, which tracks
-edits and word order changes between the source and the target text.
-The source text is shown on top and the target hypothesis text below, with
-edges linking connected words together.
+parallel structure. This is shown in two ways:
+1) as an inline diff, the rightmost pane of Figure~\ref{fig:screenshot},
+2) pictorially, as the graph below it, which shows the links as edges from
+the words in the source text (on the top row) to the words
+in the target text (the bottom row).
 
-To illustrate what edits we support, we use this example sentence in English:
-``\emph{Examples high light here lotsof futures}''
-and demonstate how we can normalise it using our tool by simply editing in
-the text area.  Initially, the source and target hypothesis text are
+We will use an example sentence in English to illustrate
+what editing operations our tool supports and how to execute them:
+``\emph{Examples high light here lotsof futures}''.
+We demonstate our tool by normalising this using our tool.
+Initially, the source and target hypothesis text are
 the same and each word is connected to itself and the diagram looks as
-Figure~\ref{fig:features0}.
+Figure~\ref{fig:features0}. Now we start editing, addressing these
+deviations:
 
 \begin{figure}
 \centering
 \newcommand{\features}[2]{
 \begin{subfigure}[t]{0.5\textwidth}
-\includegraphics[height=2cm, trim={-0.5cm 0.55cm 0 0}, clip]{#1.pdf}
+\includegraphics[height=1.9cm, trim={-0.5cm 0.55cm 0 0.1cm}, clip]{#1.pdf}
 \caption{#2 \label{fig:#1}}
 \end{subfigure}
 }
 \features{features0}{The initial state.}
-\features{features1}{Normalising spelling.}
-\features{features2}{Normalising oversplitting.}
-\features{features3}{Normalising overcompounding.}
-\features{features4}{Normalising word order.}
-\features{features5}{Inserting missing word.}
-\caption{Example normalisation steps.}
+\features{features1}{Editing within a word normalises spelling.}
+\features{features2}{Removing whitespace normalises oversplitting.}
+\features{features3}{Adding space within a word normalises overcompounding.}
+\features{features4}{Drag and drop (or cut and paste) normalises word order.}
+\features{features5}{New words can be inserted to normalise missing word.}
+\caption{Editing operations are reflected in the links
+between the learner text and the annotator's normalised text.}
 \end{figure}
 
 \newcommand{\featuresF}[2]{
 \begin{figure}[t]
-\includegraphics[height=2cm, trim={-0.5cm 0.55cm 0 0}, clip]{#1.pdf}
+\includegraphics[height=1.9cm, trim={-0.5cm 0.55cm 0 0.1cm}, clip]{#1.pdf}
 \caption{#2 \label{fig:#1}}
 \end{figure}
 }
-
-
-
-\featuresF{features6}{Alternative analysis to illustrate redundant word.}
+\featuresF{features6}{Alternative analysis to redundant word normalisation.}
 
 \begin{itemize}
-\item {\it Deviant spelling}: normalise by editing the text.
-In Figure~\ref{fig:features1} the user has removed a character and inserted two new.
+\item {\it Deviant spelling}: this is normalised by editing the text.
+In Figure~\ref{fig:features1} the user can put the cursor in ``\emph{futures}'',
+delete the \emph{u} character with backspace and type in \emph{ea} to get \emph{features}.
 
-We show differences inside tokens by
-calculating a diff automatically using standard techniques for finding
-edit scripts.  Deletions are shown in red with overstrike, and insertions
-in green. % \dan{refer to the picture}
-Note that this intra-token diff is recalculated after every edit
-as interntally only replacements on the token level are stored.  However,
-this clear highlighting of differences works as an aid for the user.
+We show differences inside tokens by calculating a diff automatically using
+standard techniques for finding edit scripts.  Deletions are shown in red
+with overstrike, and insertions in green.  This intra-token diff
+is recalculated after every edit (internally only replacements on the
+token level are stored.)  This highlighting is simply an aid for the user.
 
-\item {\it Oversplitting}: normalise by removing spaces.
-Two words have been merged in Figure~\ref{fig:features2}.
+\item {\it Oversplitting}: normalised by removing spaces.
+The user removes the space in \emph{high light}, obtaining the state in Figure~\ref{fig:features2}.
 
-\item {\it Overcompounding}: normalise by inserting spaces.
-Two words have been split in Figure~\ref{fig:features3}.
+\item {\it Overcompounding}: conversely, this is normalised by inserting a space inside a word.
+This is how the word \emph{lotsof} has been split into two in Figure~\ref{fig:features3}.
 
-\item {\it Word order}: normalise by drag and drop. Cut and paste can also be used.
+\item {\it Word order}: normalised by drag and drop using the mouse.
+An alternative is to use the standard keyboard shortcuts for cut and paste.
 The word in the source text remain connected to the target word.
-One word has been moved to the end of the sentence in Figure~\ref{fig:features4}.
-
-Note that the complexity and ambiguties that come from word order changes
+Using either of these methods, the user has moved one word to the end of the
+sentence in Figure~\ref{fig:features4}. Note that it is the complexity and ambiguties from word order changes
 are the reason why we log the editing operations.
 
 %It might be argued that insertions, deletions and replacements could be
@@ -265,14 +274,14 @@ are the reason why we log the editing operations.
 %changes) result in added complexity \cite{ShapiraStorer2007} and ambiguities,
 %which is why we log the editing operations.
 
-\item {\it Missing word}: normalise by inserting the missing word.
-The target word is not connected to any source word.
-See Figure~\ref{fig:features5}.
+\item {\it Missing word}: normalised by inserting the missing word.
+The new target word is not connected to any source word.
+See the insertion of \emph{to} in Figure~\ref{fig:features5}.
 
 \item {\it Redundant word}: normalise by deleting the word.
 The source word is now not connected to anything.
 In Figure~\ref{fig:features6} we exemplify with
-an alternative analysis where the word ``here'' has been removed.
+an alternative analysis to Figure~\ref{fig:features4} where the word \emph{here} has been removed.
 
 \end{itemize}
 
@@ -320,8 +329,8 @@ few tries.
 The editor may also be used as a library and can in this way
 be included in other tools and webpages.
 The implementation is free open source software released under the
-MIT license\footnote{\url{https://github.com/spraakbanken/swell-editor}},
-and can be tried online\footnote{\url{https://demo.spraakdata.gu.se/dan/swell-editor}}.
+MIT license\footnote{\scriptsize\url{https://github.com/spraakbanken/swell-editor}},
+and may be tried online\footnote{\scriptsize\url{https://demo.spraakdata.gu.se/dan/swell-editor}}.
 
 %We use an off-the-shelf editor for the browser,
 %CodeMirror \cite{CodeMirror}.
@@ -371,7 +380,7 @@ Annotators are free to perform the annotation for each new change, or to carry o
 %\footnote{Note to reviewers: labelling components is not yet in the interface but is scheduled to be completed in a few weeks, well before the camera-ready version.}
 
 \begin{figure}[t] % {0.5\textwidth}
-\includegraphics[height=2.0cm, trim={-0.5cm 0.55cm 0 0}, clip]{features7.pdf}
+\includegraphics[height=1.9cm, trim={-0.5cm 0.55cm 0 0.1cm}, clip]{features7.pdf}
 \caption{Example annotated sentence using ASK taxonomy. From left to right:
 missing word, oversplitting, overcompounding, orthographic deviation and
 word order.
